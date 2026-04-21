@@ -179,7 +179,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .progress-fill.orange{background:var(--orange);}
 .progress-fill.red{background:var(--red);}
 
-.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200;display:flex;align-items:center;justify-content:center;z-index:1000;}
+.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:200;display:flex;align-items:center;justify-content:center;z-index:1000;}
 .login-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;width:400px;max-width:90vw;}
 .login-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:20px;text-align:center;}
 .login-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-family:var(--font);font-size:14px;color:var(--text);margin-bottom:16px;outline:none;}
@@ -478,7 +478,8 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 
 <script>
 // ===== CONFIGURATION =====
-const API_BASE = 'https://fastconnect-backend.onrender.com';
+// Use relative URL since admin and backend are on same domain
+const API_BASE = '';
 let authToken = localStorage.getItem('admin_token');
 let currentPlans = [];
 
@@ -495,7 +496,7 @@ async function attemptLogin() {
   }
   
   try {
-    const response = await fetch(`${API_BASE}/api/admin/auth/login`, {
+    const response = await fetch(`/api/admin/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -513,12 +514,15 @@ async function attemptLogin() {
       loadDashboardStats();
       loadActiveUsers();
       loadPlans();
+      loadSalesReport();
+      renderChart();
     } else {
       errorEl.textContent = data.error || 'Invalid credentials';
       errorEl.style.display = 'block';
     }
   } catch (err) {
-    errorEl.textContent = 'Connection error. Please try again.';
+    console.error('Login error:', err);
+    errorEl.textContent = 'Connection error. Make sure backend is running.';
     errorEl.style.display = 'block';
   }
 }
@@ -632,7 +636,6 @@ async function loadPlans() {
     currentPlans = data.plans || [];
     renderAdminPlans();
     
-    // Update voucher plan dropdown
     const planSelect = document.getElementById('voucher-plan-id');
     if (planSelect) {
       planSelect.innerHTML = currentPlans.filter(p => p.is_active).map(p => 
@@ -830,7 +833,7 @@ function showTab(tab) {
   });
   document.getElementById('page-title').textContent = tabMap[tab] || tab;
   
-  if (tab === 'dashboard') loadDashboardStats();
+  if (tab === 'dashboard') { loadDashboardStats(); renderChart(); }
   if (tab === 'users') loadActiveUsers();
   if (tab === 'plans') loadPlans();
   if (tab === 'reports') loadSalesReport();
@@ -885,7 +888,6 @@ function toast(msg, type = 'info') {
 // ===== INIT =====
 renderChart();
 
-// Check if already logged in
 if (authToken) {
   document.getElementById('login-overlay').style.display = 'none';
   document.getElementById('sidebar').style.display = 'flex';
@@ -893,9 +895,9 @@ if (authToken) {
   loadDashboardStats();
   loadActiveUsers();
   loadPlans();
+  loadSalesReport();
 }
 
-// Auto-refresh data every 30 seconds
 setInterval(() => {
   if (authToken) {
     loadDashboardStats();

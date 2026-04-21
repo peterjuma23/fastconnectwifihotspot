@@ -1,8 +1,6 @@
-// src/App.js — FastConnect Captive Portal React App (No Payment Flow)
+// src/App.js — FastConnect Captive Portal React App (Simplified - Plans Only)
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { SessionProvider, useSession } from './contexts/SessionContext';
-import { usePlanSocket } from './hooks/usePlanSocket';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getPlans, redeemVoucher } from './services/api';
 import './App.css';
 
@@ -28,22 +26,6 @@ function ToastContainer() {
       ))}
     </div>
   );
-}
-
-// ── Countdown Timer Hook ─────────────────────────────────────────
-function useCountdown(endTime) {
-  const [remaining, setRemaining] = useState(0);
-  useEffect(() => {
-    if (!endTime) return;
-    const calc = () => Math.max(0, Math.floor((new Date(endTime) - Date.now()) / 1000));
-    setRemaining(calc());
-    const t = setInterval(() => setRemaining(calc()), 1000);
-    return () => clearInterval(t);
-  }, [endTime]);
-  const h = Math.floor(remaining / 3600);
-  const m = Math.floor((remaining % 3600) / 60);
-  const s = remaining % 60;
-  return { remaining, display: `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` };
 }
 
 // ── Plan Card (No Payment) ──────────────────────────────────────
@@ -141,129 +123,30 @@ function VoucherModal({ onClose, onSuccess }) {
   );
 }
 
-// ── Connected View ───────────────────────────────────────────────
-function ConnectedView() {
-  const { session, disconnect } = useSession();
-  const { display } = useCountdown(session?.endTime);
-  const snap = session?.planSnapshot || {};
-
-  const copy = (text, label) => {
-    navigator.clipboard?.writeText(text).catch(() => {});
-    toast(`${label} copied!`, 'success');
-  };
-
-  return (
-    <>
-      <header className="header header--green">
-        <Logo />
-        <div className="status-badge status-badge--connected"><span className="dot dot--pulse" />Connected</div>
-        <h1 className="header-title">{snap.name || session?.planName}</h1>
-        <p className="header-sub">Unlimited data · {snap.bandwidth_limit_mbps || 2} Mbps</p>
-        <div className="timer-box">
-          <div className="timer-label">Time Remaining</div>
-          <div className="timer-display">{display}</div>
-          <div className="timer-plan">Expires {session?.endTime ? new Date(session.endTime).toLocaleString('en-KE') : ''}</div>
-        </div>
-      </header>
-
-      <div className="creds-box">
-        <div className="creds-label">WiFi Credentials</div>
-        <div className="cred-row">
-          <span className="cred-key">Username</span>
-          <span className="cred-val">{session?.hotspotUsername}</span>
-          <button className="copy-btn" onClick={() => copy(session?.hotspotUsername, 'Username')}>Copy</button>
-        </div>
-        <div className="cred-row">
-          <span className="cred-key">Password</span>
-          <span className="cred-val">{session?.hotspotPassword}</span>
-          <button className="copy-btn" onClick={() => copy(session?.hotspotPassword, 'Password')}>Copy</button>
-        </div>
-      </div>
-
-      <div className="content">
-        <div className="info-card">
-          <div className="info-row"><span className="info-key">Connected since</span><span className="info-val">{session?.startTime ? new Date(session.startTime).toLocaleTimeString('en-KE') : '—'}</span></div>
-          <div className="info-row"><span className="info-key">Phone</span><span className="info-val">{session?.phone ? '0' + '*** ***' : '—'}</span></div>
-          <div className="info-row"><span className="info-key">Signal</span><span className="info-val" style={{color:'#16A34A'}}>Excellent</span></div>
-        </div>
-        <button className="btn-disconnect" onClick={disconnect}>Disconnect from Network</button>
-      </div>
-    </>
-  );
-}
-
-// ── Disconnected View ────────────────────────────────────────────
-function DisconnectedView() {
-  const { session, reconnect, setSessionState } = useSession();
-  const [loading, setLoading] = useState(false);
-  const snap = session?.planSnapshot || {};
-  const endTime = session?.endTime;
-  const totalMs = (snap.duration_hours || 24) * 3600000;
-  const remainingMs = endTime ? Math.max(0, new Date(endTime) - Date.now()) : 0;
-  const pct = Math.round(100 - (remainingMs / totalMs) * 100);
-
-  const handleReconnect = async () => {
-    setLoading(true);
-    toast('Reconnecting…', 'info');
-    await reconnect();
-    setLoading(false);
-  };
-
-  return (
-    <>
-      <header className="header header--orange">
-        <Logo />
-        <div className="status-badge status-badge--disconnected"><span className="dot" />Disconnected</div>
-        <h1 className="header-title">Your plan is still active</h1>
-        <p className="header-sub">Tap Reconnect to restore your connection</p>
-      </header>
-
-      <div className="content">
-        <div className="info-card">
-          <p className="info-plan-name">{snap.name}</p>
-          <p className="info-expiry">Expires {endTime ? new Date(endTime).toLocaleString('en-KE') : '—'}</p>
-          <div className="progress-bar"><div className="progress-fill progress-fill--orange" style={{width:`${pct}%`}} /></div>
-          <p className="progress-label">{pct}% of plan used</p>
-        </div>
-        <button className="btn-reconnect" onClick={handleReconnect} disabled={loading}>
-          {loading ? <span className="spinner" /> : 'Reconnect Now'}
-        </button>
-        <button className="btn-secondary" onClick={() => setSessionState('no-session')}>Buy a New Plan</button>
-      </div>
-    </>
-  );
-}
-
-// ── Plans View (main portal - No Payment) ─────────────────────
+// ── Plans View (Main Portal - No Payment, No Connected/Disconnected) ──
 function PlansView() {
-  const { onPaymentSuccess } = useSession();
   const [plans, setPlans] = useState([]);
   const [showVoucher, setShowVoucher] = useState(false);
   const [loading, setLoading] = useState(true);
-  const lastPlanFetch = useRef(Date.now());
 
   const fetchPlans = useCallback(async () => {
     try {
       const data = await getPlans();
       setPlans(data.plans || []);
-      lastPlanFetch.current = Date.now();
-    } catch { toast('Could not load plans. Please refresh.', 'error'); }
-    finally { setLoading(false); }
+    } catch (err) {
+      toast('Could not load plans. Please refresh.', 'error');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { fetchPlans(); }, [fetchPlans]);
 
-  // Real-time plan updates via WebSocket
-  usePlanSocket(useCallback(({ action }) => {
-    fetchPlans();
-    if (action !== 'SESSION_CREATED') toast('Plans have been updated', 'info');
-  }, [fetchPlans]));
-
   const handleVoucherSuccess = useCallback(async (res, phone) => {
     setShowVoucher(false);
     toast(`Voucher redeemed! ${res.planName} active.`, 'success');
-    await onPaymentSuccess(phone);
-  }, [onPaymentSuccess]);
+    toast('Please contact support to activate your connection', 'info');
+  }, []);
 
   return (
     <>
@@ -318,33 +201,14 @@ function Logo() {
   );
 }
 
-// ── Root Portal ──────────────────────────────────────────────────
-function Portal() {
-  const { sessionState, loading } = useSession();
-
-  if (loading) {
-    return (
-      <div className="loading-screen">
-        <Logo />
-        <div className="spinner spinner--white" style={{width:32,height:32,marginTop:24}} />
-      </div>
-    );
-  }
-
-  return (
-    <div className="app">
-      {sessionState === 'connected'    && <ConnectedView />}
-      {sessionState === 'disconnected' && <DisconnectedView />}
-      {sessionState === 'no-session'   && <PlansView />}
-    </div>
-  );
-}
-
+// ── Root App ──────────────────────────────────────────────────
 export default function App() {
   return (
-    <SessionProvider>
+    <>
       <ToastContainer />
-      <Portal />
-    </SessionProvider>
+      <div className="app">
+        <PlansView />
+      </div>
+    </>
   );
 }
