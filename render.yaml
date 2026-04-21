@@ -24,16 +24,3 @@ services:
         generateValue: true
       - key: HOTSPOT_PROFILE
         value: fastconnect
-
-  - type: static
-    name: fastconnect-frontend
-    plan: free
-    region: frankfurt
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    publishPath: build
-    envVars:
-      - key: REACT_APP_API_URL
-        value: https://fastconnect-backend.onrender.com
-      - key: REACT_APP_WS_URL
-        value: wss://fastconnect-backend.onrender.com
