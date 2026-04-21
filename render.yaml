@@ -1,0 +1,51 @@
+services:
+  - type: web
+    name: fastconnect-backend
+    runtime: node
+    repo: https://github.com/peterjuma23/FastConnectInternet
+    plan: free
+    region: frankfurt
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DB_HOST
+        fromDatabase:
+          name: fastconnect-db
+          property: host
+      - key: DB_USER
+        fromDatabase:
+          name: fastconnect-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: fastconnect-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: fastconnect-db
+          property: database
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: fastconnect-redis
+          property: connectionString
+      - key: MPESA_ENVIRONMENT
+        value: sandbox
+      - key: MPESA_CALLBACK_URL
+        value: https://fastconnect-backend.onrender.com/api/payments/mpesa-callback
+      - key: FRONTEND_URL
+        value: https://fastconnect-frontend.onrender.com
+      - key: WEBSOCKET_URL
+        value: wss://fastconnect-backend.onrender.com
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: COOKIE_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: BACKUP_ENCRYPTION_KEY
+        generateValue: true

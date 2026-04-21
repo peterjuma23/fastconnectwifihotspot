@@ -1,0 +1,49 @@
+version: '3.8'
+
+# ============================================================
+# docker-compose.dev.yml — Development overrides
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# ============================================================
+
+services:
+
+  backend:
+    build:
+      target: build         # Use build stage (includes devDependencies)
+    command: npm run dev    # Nodemon hot reload
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./backend:/app      # Live code mount for hot reload
+      - /app/node_modules   # Keep container's node_modules
+    ports:
+      - "3000:3000"         # Expose API directly for debugging
+      - "9229:9229"         # Node inspector port
+
+  frontend:
+    build:
+      target: deps
+    command: npm start
+    environment:
+      REACT_APP_API_URL: http://localhost:3000
+      REACT_APP_WS_URL:  ws://localhost:3000
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    ports:
+      - "3001:3000"         # React dev server
+
+  nginx:
+    ports:
+      - "8080:80"           # No HTTPS in dev
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+
+  mysql:
+    ports:
+      - "3306:3306"         # Expose for local DB clients (TablePlus, etc.)
+
+  redis:
+    ports:
+      - "6379:6379"         # Expose for RedisInsight

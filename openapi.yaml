@@ -1,0 +1,716 @@
+openapi: 3.0.3
+info:
+  title: FastConnect Internet WiFi Billing API
+  description: |
+    Complete REST API for FastConnect Internet WiFi billing system.
+    Includes M-Pesa payment integration, MikroTik session management,
+    real-time plan updates via WebSocket, and admin dashboard endpoints.
+    
+    **Base URL (production):** `https://wifi.fastconnect.co.ke`
+    
+    **Authentication:** Admin endpoints require RS256-signed JWT Bearer tokens.
+    Tokens are short-lived (15 min). Refresh via `/api/admin/auth/refresh`.
+    
+    **Rate limits:**
+    - Global: 100 req/min/IP
+    - Login: 5 req/30min/IP
+    - Payments: 3 req/min/phone
+    - Admin: 30 req/min/user
+    
+    **WebSocket:** Connect to `wss://wifi.fastconnect.co.ke/ws/plans` for real-time plan updates.
+  version: 1.0.0
+  contact:
+    name: FastConnect Support
+    email: support@fastconnect.co.ke
+
+servers:
+  - url: https://wifi.fastconnect.co.ke
+    description: Production
+  - url: http://localhost:3000
+    description: Local development
+
+tags:
+  - name: Plans
+    description: WiFi pricing plans (public)
+  - name: Sessions
+    description: User session status
+  - name: Payments
+    description: M-Pesa payment flow
+  - name: Vouchers
+    description: Voucher redemption
+  - name: Admin Auth
+    description: Admin authentication
+  - name: Admin Sessions
+    description: Active user management
+  - name: Admin Plans
+    description: Plan CRUD management
+  - name: Admin Vouchers
+    description: Voucher generation
+  - name: Admin Reports
+    description: Sales reports
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Plan:
+      type: object
+      properties:
+        id:          { type: integer, example: 4 }
+        name:        { type: string, example: "24 Hours" }
+        duration_hours: { type: number, example: 24 }
+        price_kes:   { type: number, example: 40 }
+        bandwidth_limit_mbps: { type: number, example: 2 }
+        features_json: { type: object, example: { unlimited_data: true, speed: "2 Mbps" } }
+        is_active:   { type: boolean, example: true }
+        is_popular:  { type: boolean, example: true }
+        display_order: { type: integer, example: 4 }
+
+    Session:
+      type: object
+      properties:
+        active:        { type: boolean }
+        sessionId:     { type: integer }
+        planName:      { type: string, example: "24 Hours" }
+        planSnapshot:  { $ref: '#/components/schemas/Plan' }
+        hotspotUsername: { type: string, example: "fc_8x2k9" }
+        hotspotPassword: { type: string, example: "mX7#nQ3!" }
+        endTime:       { type: string, format: date-time }
+        remainingSeconds: { type: integer, example: 79200 }
+        status:        { type: string, enum: [active, disconnected, expired] }
+
+    Payment:
+      type: object
+      properties:
+        id:                  { type: integer }
+        status:              { type: string, enum: [pending, completed, failed, cancelled] }
+        amount_kes:          { type: number, example: 40 }
+        mpesa_receipt_number: { type: string, example: "RKQ7XT82K1" }
+        checkout_request_id: { type: string }
+        created_at:          { type: string, format: date-time }
+        completed_at:        { type: string, format: date-time }
+
+    Error:
+      type: object
+      properties:
+        error:   { type: string }
+        details: { type: array, items: { type: object } }
+
+    DashboardStats:
+      type: object
+      properties:
+        activeUsers:       { type: integer, example: 12 }
+        todayRevenue:      { type: number, example: 4280 }
+        totalRevenue:      { type: number, example: 142000 }
+        todayTransactions: { type: integer, example: 87 }
+        timestamp:         { type: string, format: date-time }
+
+paths:
+
+  # ── PLANS ───────────────────────────────────────────────────────
+  /api/plans:
+    get:
+      tags: [Plans]
+      summary: List active pricing plans
+      description: Returns all active plans ordered by display_order. Results cached for 5 minutes. Invalidated on admin edits.
+      responses:
+        '200':
+          description: List of active plans
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plans:
+                    type: array
+                    items: { $ref: '#/components/schemas/Plan' }
+              example:
+                plans:
+                  - id: 1
+                    name: "2 Hours"
+                    duration_hours: 2
+                    price_kes: 10
+                    bandwidth_limit_mbps: 2
+                    is_active: true
+                    is_popular: false
+                    display_order: 1
+                  - id: 4
+                    name: "24 Hours"
+                    duration_hours: 24
+                    price_kes: 40
+                    bandwidth_limit_mbps: 2
+                    is_active: true
+                    is_popular: true
+                    display_order: 4
+        '500':
+          description: Service unavailable
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/plans/changes:
+    get:
+      tags: [Plans]
+      summary: Check if plans changed since timestamp
+      description: Used by portal for polling fallback when WebSocket is unavailable.
+      parameters:
+        - in: query
+          name: since
+          schema: { type: integer }
+          description: Unix timestamp (ms) of last known update
+          example: 1700000000000
+      responses:
+        '200':
+          description: Change status
+          content:
+            application/json:
+              example:
+                hasChanges: true
+                timestamp: 1700001234567
+
+  /api/plans/{id}:
+    get:
+      tags: [Plans]
+      summary: Get a specific plan
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Plan details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plan: { $ref: '#/components/schemas/Plan' }
+        '404':
+          description: Plan not found
+
+  # ── SESSIONS ────────────────────────────────────────────────────
+  /api/sessions/status/{phone}:
+    get:
+      tags: [Sessions]
+      summary: Check active session for a phone + device combination
+      description: |
+        Returns session data if the requesting device (identified by X-Device-Id header)
+        has an active session linked to this phone number.
+        Each device gets a unique session — same phone on two devices returns different credentials.
+      parameters:
+        - in: path
+          name: phone
+          required: true
+          schema: { type: string }
+          example: "0712345678"
+        - in: header
+          name: X-Device-Id
+          schema: { type: string }
+          description: Unique device/browser identifier
+          example: "1700000000000-abc123-57"
+      responses:
+        '200':
+          description: Session status
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Session' }
+              examples:
+                active:
+                  value:
+                    active: true
+                    sessionId: 42
+                    planName: "24 Hours"
+                    hotspotUsername: "fc_8x2k9"
+                    hotspotPassword: "mX7#nQ3!"
+                    endTime: "2024-01-15T18:45:00.000Z"
+                    remainingSeconds: 79200
+                    status: "active"
+                inactive:
+                  value:
+                    active: false
+        '400':
+          description: Invalid phone number format
+
+  # ── PAYMENTS ────────────────────────────────────────────────────
+  /api/payments/initiate:
+    post:
+      tags: [Payments]
+      summary: Initiate M-Pesa STK Push payment
+      description: |
+        Sends an STK Push to the customer's phone. The customer enters their M-Pesa PIN.
+        Poll `/api/payments/status/{checkoutRequestId}` every 3 seconds for up to 90 seconds.
+        
+        **Rate limit:** 3 requests per minute per phone number.
+        
+        **Idempotency:** Include `Idempotency-Key` header to prevent duplicate payments on retry.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema: { type: string, format: uuid }
+          description: UUID to prevent duplicate payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, planId, deviceId]
+              properties:
+                phone:    { type: string, example: "0712345678", description: "Kenyan format: 07XXXXXXXX or 254XXXXXXXXX" }
+                planId:   { type: integer, example: 4 }
+                deviceId: { type: string, example: "1700000000000-abc123" }
+      responses:
+        '200':
+          description: STK Push sent successfully
+          content:
+            application/json:
+              example:
+                success: true
+                checkoutRequestId: "ws_CO_15012024123456789"
+                idempotencyKey: "550e8400-e29b-41d4-a716-446655440000"
+                message: "STK Push sent. Enter M-Pesa PIN on your phone."
+        '400':
+          description: Validation error or M-Pesa error
+        '404':
+          description: Plan not found or inactive
+        '409':
+          description: Duplicate payment (idempotency key already used)
+        '429':
+          description: Rate limit exceeded
+
+  /api/payments/status/{checkoutRequestId}:
+    get:
+      tags: [Payments]
+      summary: Poll payment status
+      parameters:
+        - in: path
+          name: checkoutRequestId
+          required: true
+          schema: { type: string }
+          example: "ws_CO_15012024123456789"
+      responses:
+        '200':
+          description: Payment status
+          content:
+            application/json:
+              examples:
+                pending:
+                  value: { status: "pending", amount_kes: 40 }
+                completed:
+                  value: { status: "completed", amount_kes: 40, mpesa_receipt_number: "RKQ7XT82K1" }
+                failed:
+                  value: { status: "failed", amount_kes: 40 }
+        '404':
+          description: Payment not found
+
+  /api/payments/mpesa-callback:
+    post:
+      tags: [Payments]
+      summary: M-Pesa STK Push callback (Safaricom webhook)
+      description: |
+        Receives payment confirmation from Safaricom Daraja API.
+        This endpoint is called by Safaricom servers — do not call manually.
+        Responds immediately with `{"ResultCode":0}` then processes asynchronously.
+        In production, restricted to Safaricom IP addresses.
+      requestBody:
+        content:
+          application/json:
+            example:
+              Body:
+                stkCallback:
+                  MerchantRequestID: "29115-34620561-1"
+                  CheckoutRequestID: "ws_CO_15012024123456789"
+                  ResultCode: 0
+                  ResultDesc: "The service request is processed successfully."
+                  CallbackMetadata:
+                    Item:
+                      - Name: Amount
+                        Value: 40
+                      - Name: MpesaReceiptNumber
+                        Value: "RKQ7XT82K1"
+                      - Name: TransactionDate
+                        Value: 20240115123456
+                      - Name: PhoneNumber
+                        Value: 254712345678
+      responses:
+        '200':
+          description: Acknowledged
+          content:
+            application/json:
+              example:
+                ResultCode: 0
+                ResultDesc: Accepted
+
+  # ── VOUCHERS ────────────────────────────────────────────────────
+  /api/vouchers/redeem:
+    post:
+      tags: [Vouchers]
+      summary: Redeem a voucher code
+      description: |
+        Validates and redeems a voucher. Provisions WiFi access immediately.
+        Voucher preserves original plan terms even if the plan was later edited.
+        
+        **Demo voucher:** `FC-DEMO-2024` (24 Hours free access)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [voucherCode, phone, deviceId]
+              properties:
+                voucherCode: { type: string, pattern: "^FC-[A-Z0-9]{4}-[A-Z0-9]{4}$", example: "FC-DEMO-2024" }
+                phone:       { type: string, example: "0712345678" }
+                deviceId:    { type: string, example: "1700000000000-abc123" }
+      responses:
+        '200':
+          description: Voucher redeemed, access provisioned
+          content:
+            application/json:
+              example:
+                success: true
+                message: "Voucher redeemed successfully!"
+                planName: "24 Hours"
+                duration: 24
+                username: "fc_8x2k9"
+                password: "mX7#nQ3!"
+                endTime: "2024-01-16T12:00:00.000Z"
+                sessionId: 55
+        '400':
+          description: Invalid, expired, or already-used voucher
+
+  # ── ADMIN AUTH ───────────────────────────────────────────────────
+  /api/admin/auth/login:
+    post:
+      tags: [Admin Auth]
+      summary: Admin login
+      description: |
+        Authenticates admin user. Returns JWT access token (15 min) and sets
+        refresh token in HttpOnly cookie (7 days).
+        
+        If 2FA is enabled, first call returns `{"mfaRequired": true}`.
+        Make a second call including `totpCode` from authenticator app.
+        
+        **Rate limit:** 5 attempts per 30 minutes per IP.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string, example: "admin" }
+                password: { type: string, example: "Admin@FastConnect2024!" }
+                totpCode: { type: string, example: "123456", description: "Required if 2FA enabled" }
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              examples:
+                success:
+                  value:
+                    accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    user: { id: 1, username: "admin", role: "admin" }
+                mfa_required:
+                  value:
+                    mfaRequired: true
+        '401':
+          description: Invalid credentials or 2FA code
+
+  /api/admin/auth/logout:
+    post:
+      tags: [Admin Auth]
+      summary: Admin logout
+      security: [{ BearerAuth: [] }]
+      description: Revokes access token and clears refresh cookie.
+      responses:
+        '200':
+          description: Logged out
+          content:
+            application/json:
+              example: { success: true }
+
+  # ── ADMIN DASHBOARD ──────────────────────────────────────────────
+  /api/admin/dashboard/stats:
+    get:
+      tags: [Admin Sessions]
+      summary: Real-time dashboard statistics
+      security: [{ BearerAuth: [] }]
+      description: Returns live counts. Auto-refresh every 30 seconds on the dashboard.
+      responses:
+        '200':
+          description: Dashboard stats
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DashboardStats' }
+              example:
+                activeUsers: 12
+                todayRevenue: 4280
+                totalRevenue: 142000
+                todayTransactions: 87
+                timestamp: "2024-01-15T12:00:00.000Z"
+
+  # ── ADMIN SESSIONS ───────────────────────────────────────────────
+  /api/admin/sessions/active:
+    get:
+      tags: [Admin Sessions]
+      summary: List all active user sessions
+      security: [{ BearerAuth: [] }]
+      responses:
+        '200':
+          description: Active sessions
+          content:
+            application/json:
+              example:
+                sessions:
+                  - id: 42
+                    hotspot_username: "fc_8x2k9"
+                    plan_name: "24 Hours"
+                    start_time: "2024-01-15T06:45:00.000Z"
+                    end_time: "2024-01-16T06:45:00.000Z"
+                    remainingSeconds: 79200
+                    status: "active"
+
+  /api/admin/sessions/{id}/disconnect:
+    post:
+      tags: [Admin Sessions]
+      summary: Force disconnect a user session
+      security: [{ BearerAuth: [] }]
+      description: Removes user from MikroTik hotspot and marks session as disconnected. Audit logged.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: User disconnected
+          content:
+            application/json:
+              example: { success: true, message: "User disconnected" }
+        '404':
+          description: Session not found
+
+  # ── ADMIN PLANS ──────────────────────────────────────────────────
+  /api/admin/plans:
+    get:
+      tags: [Admin Plans]
+      summary: List all plans (including inactive)
+      security: [{ BearerAuth: [] }]
+      responses:
+        '200':
+          description: All plans
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plans: { type: array, items: { $ref: '#/components/schemas/Plan' } }
+
+    post:
+      tags: [Admin Plans]
+      summary: Create a new pricing plan
+      security: [{ BearerAuth: [] }]
+      description: Creates plan, invalidates cache, broadcasts WebSocket event to all portal clients.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, duration_hours, price_kes, bandwidth_limit_mbps]
+              properties:
+                name:                 { type: string, example: "3 Days" }
+                duration_hours:       { type: number, example: 72 }
+                price_kes:            { type: number, example: 100 }
+                bandwidth_limit_mbps: { type: number, example: 2 }
+                features_json:        { type: object, example: { unlimited_data: true } }
+                is_popular:           { type: boolean, example: false }
+      responses:
+        '201':
+          description: Plan created and broadcast to portal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plan: { $ref: '#/components/schemas/Plan' }
+
+  /api/admin/plans/{id}:
+    put:
+      tags: [Admin Plans]
+      summary: Update a pricing plan
+      security: [{ BearerAuth: [] }]
+      description: |
+        Updates plan. Key behaviors:
+        1. Saves old values to `plan_history` table
+        2. Updates `pricing_plans` table
+        3. Invalidates Redis cache
+        4. Broadcasts `PLAN_UPDATED` WebSocket event to all portal clients
+        5. Active sessions are **not interrupted** — they keep original terms from `plan_snapshot_json`
+        6. New sessions use updated plan
+        7. Audit logged with before/after values
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            example:
+              name: "24 Hours"
+              price_kes: 50
+              duration_hours: 24
+              bandwidth_limit_mbps: 2
+              is_popular: true
+              is_active: true
+      responses:
+        '200':
+          description: Plan updated
+          content:
+            application/json:
+              example:
+                plan:
+                  id: 4
+                  name: "24 Hours"
+                  price_kes: 50
+                  is_popular: true
+                activeSessionsPreserved: 3
+        '404':
+          description: Plan not found
+
+    delete:
+      tags: [Admin Plans]
+      summary: Soft-delete a plan
+      security: [{ BearerAuth: [] }]
+      description: |
+        Soft deletes plan (sets `deleted_at`). 
+        **Blocked** if any active sessions use this plan.
+        Broadcasts `PLAN_DELETED` WebSocket event.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Plan deleted
+        '409':
+          description: Cannot delete — active sessions exist
+          content:
+            application/json:
+              example:
+                error: "Cannot delete plan with active sessions"
+                activeCount: 3
+
+  /api/admin/plans/{id}/popular:
+    patch:
+      tags: [Admin Plans]
+      summary: Mark or unmark plan as popular
+      security: [{ BearerAuth: [] }]
+      description: Only one plan can be popular at a time. Setting popular=true clears all others.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_popular: { type: boolean }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              example: { success: true }
+
+  # ── ADMIN VOUCHERS ───────────────────────────────────────────────
+  /api/admin/vouchers/generate:
+    post:
+      tags: [Admin Vouchers]
+      summary: Generate bulk vouchers
+      security: [{ BearerAuth: [] }]
+      description: |
+        Generates vouchers in `FC-XXXX-XXXX` format. 
+        Each voucher stores a snapshot of the plan at generation time — 
+        if the plan is later edited, existing unused vouchers retain original terms.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [planId, quantity]
+              properties:
+                planId:       { type: integer, example: 4 }
+                quantity:     { type: integer, minimum: 1, maximum: 1000, example: 50 }
+                validityDays: { type: integer, example: 365 }
+      responses:
+        '200':
+          description: Vouchers generated
+          content:
+            application/json:
+              example:
+                success: true
+                generated: 50
+                codes: ["FC-A7K2-X9P1", "FC-B3M5-N8Q4"]
+
+  # ── ADMIN REPORTS ────────────────────────────────────────────────
+  /api/admin/reports/sales:
+    get:
+      tags: [Admin Reports]
+      summary: Sales report with date range
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - in: query
+          name: from
+          schema: { type: string, format: date }
+          example: "2024-01-01"
+        - in: query
+          name: to
+          schema: { type: string, format: date }
+          example: "2024-01-31"
+      responses:
+        '200':
+          description: Sales report
+          content:
+            application/json:
+              example:
+                summary:
+                  - date: "2024-01-15"
+                    revenue: 4280
+                    transactions: 87
+                byPlan:
+                  - plan_name: "24 Hours"
+                    revenue: 1520
+                    transactions: 38
+                  - plan_name: "Weekly"
+                    revenue: 1600
+                    transactions: 8
+
+  /health:
+    get:
+      summary: Health check
+      description: Used by load balancer and Docker healthcheck.
+      responses:
+        '200':
+          description: Service healthy
+          content:
+            application/json:
+              example:
+                status: ok
+                timestamp: "2024-01-15T12:00:00.000Z"
+                wsClients: 5
+        '503':
+          description: Service unhealthy (DB or Redis down)
