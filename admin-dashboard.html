@@ -335,7 +335,9 @@ tr:hover td{background:rgba(255,255,255,0.02);}
           </div>
         </div>
         <table>
-          <thead><tr><th>Username</th><th>Plan</th><th>Time Left</th><th>Connected Since</th><th>Status</th><th>Action</th></tr></thead>
+          <thead>
+            <tr><th>Username</th><th>Plan</th><th>Time Left</th><th>Connected Since</th><th>Status</th><th>Action</th></tr>
+          </thead>
           <tbody id="users-table"></tbody>
         </table>
       </div>
@@ -345,10 +347,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
     <div id="tab-plans" style="display:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <div style="font-size:13px;color:var(--text2);">Toggle to enable/disable · Edit prices in real-time</div>
-        <button class="btn btn-primary" onclick="openPlanModal()">
-          <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-          Add Plan
-        </button>
+        <button class="btn btn-primary" onclick="openPlanModal()">Add Plan</button>
       </div>
       <div class="plan-list" id="plan-list"></div>
     </div>
@@ -478,8 +477,8 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 
 <script>
 // ===== CONFIGURATION =====
-// Use relative URL since admin and backend are on same domain
-const API_BASE = '';
+// IMPORTANT: Use full backend URL since frontend and backend are on different domains
+const API_BASE = 'https://fastconnect-backend.onrender.com';
 let authToken = localStorage.getItem('admin_token');
 let currentPlans = [];
 
@@ -496,7 +495,7 @@ async function attemptLogin() {
   }
   
   try {
-    const response = await fetch(`/api/admin/auth/login`, {
+    const response = await fetch(`${API_BASE}/api/admin/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -544,7 +543,7 @@ function getAuthHeaders() {
 
 // ===== API CALLS =====
 async function apiCall(endpoint, options = {}) {
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+  const url = `${API_BASE}${endpoint}`;
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -578,7 +577,7 @@ async function loadDashboardStats() {
   }
 }
 
-// ===== ACTIVE USERS (REAL ONLY) =====
+// ===== ACTIVE USERS =====
 async function loadActiveUsers() {
   try {
     const data = await apiCall('/api/admin/sessions/active');
@@ -629,7 +628,7 @@ function filterUsers(query) {
   });
 }
 
-// ===== PLANS MANAGEMENT (REAL-TIME UPDATES) =====
+// ===== PLANS MANAGEMENT =====
 async function loadPlans() {
   try {
     const data = await apiCall('/api/admin/plans');
