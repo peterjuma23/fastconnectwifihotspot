@@ -21,7 +21,6 @@
   }
   body{font-family:var(--font);background:#F8FAFC;color:var(--text);min-height:100vh;max-width:420px;margin:0 auto;position:relative;overflow-x:hidden;}
 
-  /* HEADER */
   .header{padding:28px 20px 24px;position:relative;overflow:hidden;}
   .header::before{content:'';position:absolute;inset:0;opacity:0.12;background:repeating-linear-gradient(45deg,rgba(255,255,255,0.3) 0,rgba(255,255,255,0.3) 1px,transparent 0,transparent 50%);background-size:10px 10px;}
   .header-inner{position:relative;z-index:1;}
@@ -39,13 +38,11 @@
   .header-green{background:linear-gradient(135deg,#16A34A 0%,#15803D 100%);}
   .header-orange{background:linear-gradient(135deg,#EA580C 0%,#C2410C 100%);}
 
-  /* TIMER */
   .timer-box{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:var(--radius-sm);padding:14px 16px;margin-top:16px;}
   .timer-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:6px;}
   .timer-display{font-family:var(--mono);font-size:34px;font-weight:600;color:white;letter-spacing:2px;}
   .timer-plan{font-size:12px;color:rgba(255,255,255,0.65);margin-top:4px;font-weight:500;}
 
-  /* WIFI CREDS */
   .creds-box{margin:16px 20px 0;background:var(--yellow-bg);border:1.5px solid #FDE68A;border-radius:var(--radius-sm);padding:14px 16px;}
   .creds-label{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--yellow);margin-bottom:10px;}
   .cred-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
@@ -56,11 +53,9 @@
   .copy-btn:hover{background:#FDE68A;}
   .copy-btn:active{transform:scale(0.96);}
 
-  /* MAIN CONTENT */
   .content{padding:20px;}
   .section-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;}
 
-  /* PLAN CARDS */
   .plans-grid{display:flex;flex-direction:column;gap:12px;}
   .plan-card{background:var(--white);border:1.5px solid var(--gray-border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
   .plan-card:hover{border-color:#93C5FD;box-shadow:var(--shadow-sm);}
@@ -74,98 +69,28 @@
   .plan-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
   .plan-feat{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--text-muted);}
   .plan-feat svg{width:13px;height:13px;fill:var(--green);}
-  .pay-btn{width:100%;background:var(--blue);color:white;border:none;border-radius:10px;padding:13px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;letter-spacing:-0.2px;}
-  .pay-btn:hover{background:#1D4ED8;}
-  .pay-btn:active{transform:scale(0.98);}
-  .pay-btn.popular{background:var(--blue);}
+  .pay-btn{width:100%;background:#9CA3AF;color:white;border:none;border-radius:10px;padding:13px;font-family:var(--font);font-size:14px;font-weight:700;cursor:not-allowed;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;opacity:0.7;}
   .mpesa-logo{background:rgba(255,255,255,0.2);border-radius:5px;padding:2px 6px;font-size:11px;font-weight:800;color:white;letter-spacing:0.5px;}
 
-  /* VOUCHER */
   .voucher-link{display:block;text-align:center;margin-top:20px;padding:14px;border:1.5px dashed var(--gray-border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;transition:all 0.2s;}
   .voucher-link:hover{background:var(--blue-light);border-color:var(--blue);}
 
-  /* DISCONNECT STATE */
   .disconnected-info{background:var(--white);border:1.5px solid var(--gray-border);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
   .disc-plan{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
   .disc-expiry{font-size:13px;color:var(--text-muted);font-weight:500;}
-  .disc-expiry span{font-weight:700;color:var(--orange);}
   .reconnect-btn{width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:16px;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;margin-bottom:12px;transition:all 0.2s;}
   .reconnect-btn:hover{background:#1D4ED8;}
   .disconnect-btn{width:100%;background:var(--red-light);color:var(--red);border:1.5px solid #FCA5A5;border-radius:var(--radius-sm);padding:14px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:10px;}
   .disconnect-btn:hover{background:#FEE2E2;}
 
-  /* MODAL OVERLAY */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s;}
-  .overlay.active{opacity:1;pointer-events:all;}
-  .modal{background:white;border-radius:24px 24px 0 0;padding:28px 20px 40px;width:100%;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);}
-  .overlay.active .modal{transform:translateY(0);}
-  .modal-handle{width:40px;height:4px;background:var(--gray-border);border-radius:100px;margin:0 auto 20px;}
-  .modal-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-0.3px;}
-  .modal-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px;font-weight:500;}
-  .modal-amount{background:var(--blue-light);border-radius:var(--radius-sm);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-  .modal-amount-label{font-size:13px;color:var(--blue-dark);font-weight:600;}
-  .modal-amount-val{font-size:22px;font-weight:800;color:var(--blue);}
-  .input-group{margin-bottom:16px;}
-  .input-label{font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;display:block;}
-  .phone-wrap{display:flex;gap:8px;}
-  .phone-prefix{background:var(--gray-light);border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);padding:0 14px;font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;white-space:nowrap;}
-  input[type=text],input[type=tel]{width:100%;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);padding:13px 16px;font-family:var(--font);font-size:15px;font-weight:600;color:var(--text);outline:none;transition:border-color 0.15s;}
-  input[type=text]:focus,input[type=tel]:focus{border-color:var(--blue);}
-  .input-hint{font-size:11px;color:var(--text-light);margin-top:6px;font-weight:500;}
-  .submit-btn{width:100%;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);padding:15px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
-  .submit-btn:hover{background:#15803D;}
-  .submit-btn:disabled{background:var(--gray-border);color:var(--text-light);cursor:not-allowed;}
-  .modal-close{position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:50%;background:var(--gray-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text-muted);}
-
-  /* LOADING SPINNER */
-  .spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,0.35);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-
-  /* TOAST */
+  .coming-soon-badge{display:inline-block;background:#FEF3C7;color:#D97706;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:700;margin-top:8px;text-align:center;}
+  
   .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:90%;max-width:360px;}
-  .toast{background:var(--text);color:white;padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);animation:toastIn 0.3s ease;opacity:1;transition:opacity 0.3s;}
+  .toast{background:var(--text);color:white;padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);animation:toastIn 0.3s ease;}
   .toast.success{background:var(--green);}
   .toast.error{background:var(--red);}
   .toast.info{background:var(--blue);}
-  .toast.fade-out{opacity:0;}
   @keyframes toastIn{from{transform:translateY(-10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-
-  /* STATUS INDICATOR */
-  .status-bar{background:var(--white);border-bottom:1px solid var(--gray-border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;}
-  .signal-icon{display:flex;align-items:flex-end;gap:2px;}
-  .signal-bar{background:var(--green);border-radius:1px;width:4px;}
-  .signal-bar:nth-child(1){height:6px;}
-  .signal-bar:nth-child(2){height:10px;}
-  .signal-bar:nth-child(3){height:14px;}
-  .signal-bar:nth-child(4){height:18px;}
-  .status-bar-text{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;}
-
-  /* PAYMENT STATUS */
-  .payment-status{background:var(--white);border:1.5px solid var(--gray-border);border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:16px;}
-  .payment-status-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;}
-  .payment-status-icon.pending{background:#FEF3C7;animation:pulseBg 1.5s infinite;}
-  .payment-status-icon.success{background:var(--green-light);}
-  .payment-status-icon.error{background:var(--red-light);}
-  @keyframes pulseBg{0%,100%{opacity:1;}50%{opacity:0.6;}}
-  .payment-status-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;}
-  .payment-status-sub{font-size:13px;color:var(--text-muted);line-height:1.5;}
-
-  /* VOUCHER STATE */
-  .voucher-success{background:var(--green-light);border:1.5px solid #86EFAC;border-radius:var(--radius-sm);padding:16px;text-align:center;margin-bottom:16px;}
-  .voucher-success-title{font-size:15px;font-weight:800;color:var(--green-dark);margin-bottom:4px;}
-  .voucher-success-sub{font-size:12px;color:#166534;font-weight:500;}
-
-  .demo-nav{display:flex;gap:8px;padding:12px 20px;background:var(--white);border-bottom:1px solid var(--gray-border);overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .demo-btn{flex-shrink:0;padding:6px 12px;border-radius:100px;border:1.5px solid var(--gray-border);font-size:11px;font-weight:700;color:var(--text-muted);background:transparent;cursor:pointer;letter-spacing:0.3px;transition:all 0.15s;}
-  .demo-btn.active{background:var(--blue);color:white;border-color:var(--blue);}
-
-  .info-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-border);}
-  .info-row:last-child{border-bottom:none;}
-  .info-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .info-icon.blue{background:var(--blue-light);}
-  .info-icon.green{background:var(--green-light);}
-  .info-key{font-size:12px;color:var(--text-muted);font-weight:500;margin-bottom:2px;}
-  .info-val{font-size:14px;font-weight:700;color:var(--text);}
 </style>
 </head>
 <body>
@@ -173,11 +98,10 @@
 <div class="toast-container" id="toasts"></div>
 
 <!-- Demo Nav -->
-<div class="demo-nav">
-  <button class="demo-btn active" onclick="showState('plans')">Plan Selection</button>
-  <button class="demo-btn" onclick="showState('connected')">Connected</button>
-  <button class="demo-btn" onclick="showState('disconnected')">Disconnected</button>
-  <button class="demo-btn" onclick="showState('payment')">Payment Flow</button>
+<div class="demo-nav" style="display:flex;gap:8px;padding:12px 20px;background:var(--white);border-bottom:1px solid var(--gray-border);overflow-x:auto;">
+  <button class="demo-btn" style="flex-shrink:0;padding:6px 12px;border-radius:100px;border:1.5px solid var(--gray-border);font-size:11px;font-weight:700;background:var(--blue);color:white;border-color:var(--blue);cursor:pointer;" onclick="showState('plans')">Plan Selection</button>
+  <button class="demo-btn" style="flex-shrink:0;padding:6px 12px;border-radius:100px;border:1.5px solid var(--gray-border);font-size:11px;font-weight:700;background:transparent;color:var(--text-muted);cursor:pointer;" onclick="showState('connected')">Connected</button>
+  <button class="demo-btn" style="flex-shrink:0;padding:6px 12px;border-radius:100px;border:1.5px solid var(--gray-border);font-size:11px;font-weight:700;background:transparent;color:var(--text-muted);cursor:pointer;" onclick="showState('disconnected')">Disconnected</button>
 </div>
 
 <!-- ===== STATE: PLAN SELECTION ===== -->
@@ -191,13 +115,16 @@
         <span class="logo-text">FastConnect Internet</span>
       </div>
       <div class="header-title">Get Connected</div>
-      <div class="header-sub">Choose a plan and pay with M-Pesa</div>
+      <div class="header-sub">Choose a plan and contact support to activate</div>
     </div>
   </div>
 
   <div class="content">
     <div class="section-title">Available Plans</div>
     <div class="plans-grid" id="plans-grid"></div>
+    <div class="coming-soon-badge" style="display:block;text-align:center;margin-top:16px;">
+      ⚡ Online payments coming soon. Contact support to activate your plan.
+    </div>
     <div class="voucher-link" onclick="openVoucherModal()">
       🎟 Have a voucher? Redeem it here
     </div>
@@ -242,17 +169,17 @@
   <div class="content">
     <div class="section-title">Session Info</div>
     <div style="background:var(--white);border:1.5px solid var(--gray-border);border-radius:var(--radius);padding:4px 16px;">
-      <div class="info-row">
-        <div class="info-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="#16A34A"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg></div>
-        <div><div class="info-key">Connected since</div><div class="info-val">6:45 PM today</div></div>
+      <div class="info-row" style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-border);">
+        <div class="info-icon green" style="width:36px;height:36px;border-radius:10px;background:var(--green-light);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#16A34A"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg></div>
+        <div><div class="info-key" style="font-size:12px;color:var(--text-muted);font-weight:500;margin-bottom:2px;">Connected since</div><div class="info-val" style="font-size:14px;font-weight:700;color:var(--text);">6:45 PM today</div></div>
       </div>
-      <div class="info-row">
-        <div class="info-icon blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="#2563EB"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 115 9.5 4.5 4.5 0 019.5 14z"/></svg></div>
-        <div><div class="info-key">Phone</div><div class="info-val">0712 *** ***</div></div>
+      <div class="info-row" style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-border);">
+        <div class="info-icon blue" style="width:36px;height:36px;border-radius:10px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#2563EB"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 115 9.5 4.5 4.5 0 019.5 14z"/></svg></div>
+        <div><div class="info-key" style="font-size:12px;color:var(--text-muted);font-weight:500;margin-bottom:2px;">Phone</div><div class="info-val" style="font-size:14px;font-weight:700;color:var(--text);">0712 *** ***</div></div>
       </div>
-      <div class="info-row">
-        <div class="info-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="#16A34A"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg></div>
-        <div><div class="info-key">Signal</div><div class="info-val">Excellent</div></div>
+      <div class="info-row" style="display:flex;align-items:center;gap:10px;padding:12px 0;">
+        <div class="info-icon green" style="width:36px;height:36px;border-radius:10px;background:var(--green-light);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#16A34A"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg></div>
+        <div><div class="info-key" style="font-size:12px;color:var(--text-muted);font-weight:500;margin-bottom:2px;">Signal</div><div class="info-val" style="font-size:14px;font-weight:700;color:var(--text);">Excellent</div></div>
       </div>
     </div>
     <button class="disconnect-btn" onclick="handleDisconnect()">Disconnect from Network</button>
@@ -291,148 +218,98 @@
   </div>
 </div>
 
-<!-- ===== STATE: PAYMENT ===== -->
-<div id="state-payment" style="display:none;">
-  <div class="header header-blue">
-    <div class="header-inner">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24"><path d="M1.293 8.395A14.9 14.9 0 0112 4c3.9 0 7.45 1.49 10.107 3.93l1.307-1.46A17 17 0 0012 2 16.9 16.9 0 00.001 6.876zM12 10a7 7 0 00-4.95 2.05L8.465 13.5A5 5 0 0112 12a5 5 0 013.535 1.5l1.414-1.45A7 7 0 0012 10zm0 4a3 3 0 00-2.121.879L12 17l2.121-2.121A3 3 0 0012 14z"/></svg>
-        </div>
-        <span class="logo-text">FastConnect Internet</span>
-      </div>
-      <div class="header-title">Payment</div>
-      <div class="header-sub">M-Pesa STK Push</div>
-    </div>
-  </div>
-  <div class="content">
-    <div id="payment-pending" class="payment-status">
-      <div class="payment-status-icon pending">📱</div>
-      <div class="payment-status-title">Check your phone</div>
-      <div class="payment-status-sub">An M-Pesa payment prompt has been sent to<br><strong>0712 *** ***</strong>. Enter your PIN to complete.</div>
-      <div style="margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;">
-        <div class="spinner" style="border-color:rgba(37,99,235,0.25);border-top-color:var(--blue);"></div>
-        <span style="font-size:13px;color:var(--text-muted);font-weight:600;">Waiting for payment...</span>
-      </div>
-    </div>
-    <div id="payment-success" class="payment-status" style="display:none;">
-      <div class="payment-status-icon success">✅</div>
-      <div class="payment-status-title">Payment Successful!</div>
-      <div class="payment-status-sub">KES 40 received. Your 24 Hours plan is now active. Connecting you to the network...</div>
-      <div style="margin-top:16px;">
-        <div style="font-size:11px;color:var(--text-light);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px;">Receipt</div>
-        <div style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);">RKQ7XT82K1</div>
-      </div>
-    </div>
-    <button onclick="simulatePaymentSuccess()" style="width:100%;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);padding:13px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">Simulate Success</button>
-    <button onclick="showState('plans')" style="width:100%;background:transparent;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);padding:12px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer;">Cancel</button>
-  </div>
-</div>
-
-<!-- MPESA MODAL -->
-<div class="overlay" id="mpesa-modal">
-  <div class="modal" style="position:relative;">
-    <button class="modal-close" onclick="closeModal('mpesa-modal')">×</button>
-    <div class="modal-handle"></div>
-    <div class="modal-title">Pay with M-Pesa</div>
-    <div class="modal-sub" id="modal-plan-name">24 Hours — KES 40</div>
-    <div class="modal-amount">
-      <span class="modal-amount-label">Amount to pay</span>
-      <span class="modal-amount-val" id="modal-amount">KES 40</span>
-    </div>
-    <div class="input-group">
-      <label class="input-label">M-Pesa Phone Number</label>
-      <div class="phone-wrap">
-        <div class="phone-prefix">🇰🇪 +254</div>
-        <input type="tel" id="phone-input" placeholder="712 345 678" maxlength="9" oninput="validatePhone()">
-      </div>
-      <div class="input-hint">Enter your M-Pesa registered number (e.g. 712345678)</div>
-    </div>
-    <button class="submit-btn" id="mpesa-submit" onclick="initiatePayment()" disabled>
-      <span id="submit-text">Send STK Push</span>
-      <div id="submit-spinner" class="spinner" style="display:none;"></div>
-    </button>
-  </div>
-</div>
-
 <!-- VOUCHER MODAL -->
-<div class="overlay" id="voucher-modal">
-  <div class="modal" style="position:relative;">
-    <button class="modal-close" onclick="closeModal('voucher-modal')">×</button>
-    <div class="modal-handle"></div>
-    <div class="modal-title">Redeem Voucher</div>
-    <div class="modal-sub">Enter your voucher code to get connected</div>
-    <div class="input-group">
-      <label class="input-label">Voucher Code</label>
-      <input type="text" id="voucher-input" placeholder="FC-XXXX-XXXX" maxlength="12" style="text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);" oninput="formatVoucher(this)">
-      <div class="input-hint">Try demo voucher: FC-DEMO-2024</div>
+<div class="overlay" id="voucher-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s;">
+  <div class="modal" style="background:white;border-radius:24px 24px 0 0;padding:28px 20px 40px;width:100%;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);position:relative;">
+    <div class="modal-handle" style="width:40px;height:4px;background:var(--gray-border);border-radius:100px;margin:0 auto 20px;"></div>
+    <button class="modal-close" onclick="closeModal('voucher-modal')" style="position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:50%;background:var(--gray-light);border:none;cursor:pointer;font-size:18px;">×</button>
+    <div class="modal-title" style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px;">Redeem Voucher</div>
+    <div class="modal-sub" style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">Enter your voucher code to get connected</div>
+    <div class="input-group" style="margin-bottom:16px;">
+      <label class="input-label" style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;display:block;">Voucher Code</label>
+      <input type="text" id="voucher-input" placeholder="FC-XXXX-XXXX" maxlength="12" style="width:100%;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);padding:13px 16px;font-family:var(--mono);font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:1px;outline:none;">
+      <div class="input-hint" style="font-size:11px;color:var(--text-light);margin-top:6px;">Demo voucher: FC-DEMO-2024</div>
     </div>
     <div id="voucher-error" style="display:none;background:var(--red-light);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--red);font-weight:600;"></div>
-    <button class="submit-btn" onclick="redeemVoucher()" style="background:var(--blue);">
+    <button class="submit-btn" onclick="redeemVoucher()" style="width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:15px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;">
       <span>Redeem Voucher</span>
     </button>
   </div>
 </div>
 
+<style>
+  .overlay.active{opacity:1;pointer-events:all;}
+  .overlay.active .modal{transform:translateY(0);}
+  .modal-close:hover{background:var(--gray-border);}
+  .submit-btn:hover{background:#1D4ED8;}
+  .demo-btn.active{background:var(--blue);color:white;border-color:var(--blue);}
+  .info-row:last-child{border-bottom:none;}
+  .info-icon{flex-shrink:0;}
+</style>
+
 <script>
 // ===== DATA =====
-const plans = [
-  {id:1,name:'2 Hours',duration:2,price:10,bandwidth:2,popular:false},
-  {id:2,name:'4 Hours',duration:4,price:15,bandwidth:2,popular:false},
-  {id:3,name:'8 Hours',duration:8,price:25,bandwidth:2,popular:false},
-  {id:4,name:'24 Hours',duration:24,price:40,bandwidth:2,popular:true},
-  {id:5,name:'Weekly',duration:168,price:200,bandwidth:2,popular:false},
-  {id:6,name:'Monthly',duration:720,price:600,bandwidth:2,popular:false},
-];
+const API_BASE = 'https://fastconnect-backend.onrender.com';
+let plans = [];
 
-let selectedPlan = null;
-let timerInterval = null;
-let timeRemaining = 23*3600 + 47*60 + 12;
-
-// ===== INIT =====
-renderPlans();
-startTimer();
+async function fetchPlans() {
+  try {
+    const response = await fetch(`${API_BASE}/api/plans`);
+    const data = await response.json();
+    if (data.plans) {
+      plans = data.plans;
+      renderPlans();
+    }
+  } catch (err) {
+    console.error('Failed to fetch plans', err);
+    // Fallback to default plans
+    plans = [
+      {id:1,name:'2 Hours',duration_hours:2,price_kes:10,bandwidth_limit_mbps:2,is_popular:false},
+      {id:2,name:'4 Hours',duration_hours:4,price_kes:15,bandwidth_limit_mbps:2,is_popular:false},
+      {id:3,name:'8 Hours',duration_hours:8,price_kes:25,bandwidth_limit_mbps:2,is_popular:false},
+      {id:4,name:'24 Hours',duration_hours:24,price_kes:40,bandwidth_limit_mbps:2,is_popular:true},
+      {id:5,name:'Weekly',duration_hours:168,price_kes:200,bandwidth_limit_mbps:2,is_popular:false},
+      {id:6,name:'Monthly',duration_hours:720,price_kes:600,bandwidth_limit_mbps:2,is_popular:false},
+    ];
+    renderPlans();
+  }
+}
 
 function renderPlans(){
   const grid = document.getElementById('plans-grid');
+  if (!grid) return;
   grid.innerHTML = plans.map(p=>`
-    <div class="plan-card${p.popular?' popular':''}">
-      ${p.popular?'<div class="popular-badge">⭐ Popular</div>':''}
+    <div class="plan-card${p.is_popular?' popular':''}">
+      ${p.is_popular?'<div class="popular-badge">⭐ Popular</div>':''}
       <div class="plan-top">
         <div class="plan-name">${p.name}</div>
         <div class="plan-price">
-          <div class="plan-price-num">KES ${p.price}</div>
+          <div class="plan-price-num">KES ${p.price_kes}</div>
           <div class="plan-price-sub">one-time</div>
         </div>
       </div>
       <div class="plan-features">
-        <span class="plan-feat"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Unlimited Data</span>
-        <span class="plan-feat"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>${p.bandwidth} Mbps</span>
-        <span class="plan-feat"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>${p.name} access</span>
+        <span class="plan-feat"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#16A34A"/></svg>Unlimited Data</span>
+        <span class="plan-feat"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#16A34A"/></svg>${p.bandwidth_limit_mbps} Mbps</span>
+        <span class="plan-feat"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#16A34A"/></svg>${p.name} access</span>
       </div>
-      <button class="pay-btn${p.popular?' popular':''}" onclick="openPayModal(${p.id})">
-        <span class="mpesa-logo">M</span> Pay KES ${p.price}
+      <button class="pay-btn" disabled>
+        <span class="mpesa-logo">M</span> Coming Soon
       </button>
     </div>
   `).join('');
 }
 
-function showState(state){
-  ['plans','connected','disconnected','payment'].forEach(s=>{
-    document.getElementById(`state-${s}`).style.display = s===state?'':'none';
-  });
-  document.querySelectorAll('.demo-btn').forEach((b,i)=>{
-    b.classList.toggle('active', ['plans','connected','disconnected','payment'][i]===state);
-  });
-}
+let timerInterval = null;
+let timeRemaining = 23*3600 + 47*60 + 12;
 
-// ===== TIMER =====
 function startTimer(){
   if(timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(()=>{
     if(timeRemaining>0){
       timeRemaining--;
-      document.getElementById('countdown').textContent = formatTime(timeRemaining);
+      const countdownEl = document.getElementById('countdown');
+      if(countdownEl) countdownEl.textContent = formatTime(timeRemaining);
     }
   },1000);
 }
@@ -443,18 +320,21 @@ function formatTime(s){
 }
 function pad(n){return n.toString().padStart(2,'0');}
 
-// ===== MODALS =====
-function openPayModal(planId){
-  selectedPlan = plans.find(p=>p.id===planId);
-  document.getElementById('modal-plan-name').textContent = `${selectedPlan.name} — KES ${selectedPlan.price}`;
-  document.getElementById('modal-amount').textContent = `KES ${selectedPlan.price}`;
-  openModal('mpesa-modal');
+function showState(state){
+  const states = ['plans','connected','disconnected'];
+  states.forEach(s=>{
+    const el = document.getElementById(`state-${s}`);
+    if(el) el.style.display = s===state?'':'none';
+  });
+  const btns = document.querySelectorAll('.demo-btn');
+  btns.forEach((b,i)=>{
+    if(b) b.classList.toggle('active', states[i]===state);
+  });
+  if(state === 'connected') startTimer();
 }
 
-function openVoucherModal(){openModal('voucher-modal');}
-
-function openModal(id){
-  document.getElementById(id).classList.add('active');
+function openVoucherModal(){
+  document.getElementById('voucher-modal').classList.add('active');
   document.body.style.overflow='hidden';
 }
 
@@ -463,34 +343,6 @@ function closeModal(id){
   document.body.style.overflow='';
 }
 
-// ===== PHONE VALIDATION =====
-function validatePhone(){
-  const val = document.getElementById('phone-input').value.replace(/\s/g,'');
-  const valid = /^[71][0-9]{8}$/.test(val);
-  document.getElementById('mpesa-submit').disabled = !valid;
-}
-
-// ===== PAYMENT =====
-function initiatePayment(){
-  const btn = document.getElementById('mpesa-submit');
-  btn.disabled = true;
-  document.getElementById('submit-text').textContent = 'Sending...';
-  document.getElementById('submit-spinner').style.display = 'block';
-  setTimeout(()=>{
-    closeModal('mpesa-modal');
-    showState('payment');
-    toast('STK Push sent! Check your phone','info');
-  },1800);
-}
-
-function simulatePaymentSuccess(){
-  document.getElementById('payment-pending').style.display='none';
-  document.getElementById('payment-success').style.display='block';
-  toast('Payment successful! Connecting...','success');
-  setTimeout(()=>showState('connected'),2000);
-}
-
-// ===== VOUCHER =====
 function formatVoucher(el){
   let val = el.value.replace(/[^A-Z0-9]/gi,'').toUpperCase();
   if(val.length>2) val = val.slice(0,2)+'-'+val.slice(2);
@@ -508,10 +360,10 @@ function redeemVoucher(){
   } else {
     errEl.style.display='block';
     errEl.textContent='Invalid or expired voucher code. Please try again.';
+    setTimeout(()=>{errEl.style.display='none';},3000);
   }
 }
 
-// ===== DISCONNECT / RECONNECT =====
 function handleDisconnect(){
   toast('Disconnected from network','info');
   setTimeout(()=>showState('disconnected'),800);
@@ -522,26 +374,35 @@ function handleReconnect(){
   setTimeout(()=>{showState('connected');toast('Reconnected successfully!','success');},1500);
 }
 
-// ===== COPY =====
 function copyText(text, label){
   navigator.clipboard?.writeText(text).catch(()=>{});
   toast(`${label} copied!`,'success');
 }
 
-// ===== TOAST =====
 function toast(msg, type='info'){
   const container = document.getElementById('toasts');
+  if(!container) return;
   const el = document.createElement('div');
   el.className = `toast ${type}`;
   el.innerHTML = `<span style="font-size:14px;">${type==='success'?'✓':type==='error'?'✕':'ℹ'}</span>${msg}`;
   container.appendChild(el);
-  setTimeout(()=>{el.classList.add('fade-out');setTimeout(()=>el.remove(),300);},3000);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity 0.3s';setTimeout(()=>el.remove(),300);},3000);
 }
 
-// Close modals on overlay click
 document.querySelectorAll('.overlay').forEach(o=>{
   o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);});
 });
+
+document.getElementById('voucher-input')?.addEventListener('input', function(e){
+  formatVoucher(this);
+});
+
+// Initialize
+fetchPlans();
+showState('plans');
+
+// Poll for plan updates every 30 seconds
+setInterval(fetchPlans, 30000);
 </script>
 </body>
 </html>

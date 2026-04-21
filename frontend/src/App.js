@@ -1,9 +1,9 @@
-// src/App.js — FastConnect Captive Portal React App
+// src/App.js — FastConnect Captive Portal React App (No Payment Flow)
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { SessionProvider, useSession } from './contexts/SessionContext';
 import { usePlanSocket } from './hooks/usePlanSocket';
-import { getPlans, initiatePayment, getPaymentStatus, redeemVoucher } from './services/api';
+import { getPlans, redeemVoucher } from './services/api';
 import './App.css';
 
 // ── Toast System ────────────────────────────────────────────────
@@ -46,10 +46,10 @@ function useCountdown(endTime) {
   return { remaining, display: `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` };
 }
 
-// ── Plan Card ────────────────────────────────────────────────────
-function PlanCard({ plan, onSelect }) {
+// ── Plan Card (No Payment) ──────────────────────────────────────
+function PlanCard({ plan }) {
   return (
-    <div className={`plan-card ${plan.is_popular ? 'plan-card--popular' : ''}`} onClick={() => onSelect(plan)}>
+    <div className={`plan-card ${plan.is_popular ? 'plan-card--popular' : ''}`}>
       {plan.is_popular && <div className="plan-badge">⭐ Popular</div>}
       <div className="plan-card__top">
         <div className="plan-card__name">{plan.name}</div>
@@ -70,113 +70,9 @@ function PlanCard({ plan, onSelect }) {
           </span>
         ))}
       </div>
-      <button className="pay-btn" onClick={e => { e.stopPropagation(); onSelect(plan); }}>
-        <span className="mpesa-m">M</span> Pay KES {plan.price_kes}
+      <button className="pay-btn" disabled style={{ opacity: 0.7, cursor: 'not-allowed', background: '#9CA3AF' }}>
+        <span className="mpesa-m">M</span> Coming Soon
       </button>
-    </div>
-  );
-}
-
-// ── Phone Modal ──────────────────────────────────────────────────
-function PhoneModal({ plan, onClose, onSuccess }) {
-  const [phone, setPhone] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [pollState, setPollState] = useState(null); // null | 'waiting' | 'success' | 'failed'
-  const [checkoutId, setCheckoutId] = useState('');
-  const pollRef = useRef(null);
-
-  const valid = /^[71][0-9]{8}$/.test(phone.replace(/\s/g, ''));
-
-  const submit = async () => {
-    setError(''); setLoading(true);
-    try {
-      const res = await initiatePayment({ phone: `0${phone}`, planId: plan.id });
-      setCheckoutId(res.checkoutRequestId);
-      setPollState('waiting');
-      // Poll for payment status
-      let attempts = 0;
-      pollRef.current = setInterval(async () => {
-        attempts++;
-        try {
-          const status = await getPaymentStatus(res.checkoutRequestId);
-          if (status.status === 'completed') {
-            clearInterval(pollRef.current);
-            setPollState('success');
-            setTimeout(() => onSuccess(`0${phone}`), 1500);
-          } else if (status.status === 'failed') {
-            clearInterval(pollRef.current);
-            setPollState('failed');
-          }
-        } catch {}
-        if (attempts >= 30) { clearInterval(pollRef.current); setPollState('failed'); }
-      }, 3000);
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => () => pollRef.current && clearInterval(pollRef.current), []);
-
-  return (
-    <div className="overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal">
-        <div className="modal-handle" />
-        {pollState === null && <>
-          <button className="modal-close" onClick={onClose}>×</button>
-          <h2 className="modal-title">Pay with M-Pesa</h2>
-          <p className="modal-sub">{plan.name}</p>
-          <div className="modal-amount">
-            <span>Amount</span>
-            <strong>KES {plan.price_kes}</strong>
-          </div>
-          <label className="input-label">M-Pesa Phone Number</label>
-          <div className="phone-wrap">
-            <span className="phone-prefix">🇰🇪 +254</span>
-            <input
-              type="tel"
-              placeholder="712 345 678"
-              maxLength={9}
-              value={phone}
-              onChange={e => setPhone(e.target.value.replace(/\D/g,''))}
-              className="input"
-              autoFocus
-            />
-          </div>
-          <p className="input-hint">Enter your Safaricom number (e.g. 712345678)</p>
-          {error && <div className="input-error">{error}</div>}
-          <button className="btn-submit" onClick={submit} disabled={!valid || loading}>
-            {loading ? <span className="spinner" /> : 'Send STK Push'}
-          </button>
-        </>}
-
-        {pollState === 'waiting' && (
-          <div className="payment-status">
-            <div className="payment-status__icon payment-status__icon--pending">📱</div>
-            <h3>Check your phone</h3>
-            <p>M-Pesa PIN prompt sent to <strong>0{phone}</strong>.<br />Enter your PIN to complete payment.</p>
-            <div className="waiting-row"><span className="spinner spinner--blue" /> Waiting for confirmation…</div>
-          </div>
-        )}
-
-        {pollState === 'success' && (
-          <div className="payment-status">
-            <div className="payment-status__icon payment-status__icon--success">✅</div>
-            <h3>Payment Successful!</h3>
-            <p>KES {plan.price_kes} received. Setting up your connection…</p>
-          </div>
-        )}
-
-        {pollState === 'failed' && (
-          <div className="payment-status">
-            <div className="payment-status__icon payment-status__icon--error">❌</div>
-            <h3>Payment Not Confirmed</h3>
-            <p>We didn't receive a payment confirmation. If money was deducted, contact support.</p>
-            <button className="btn-submit" onClick={() => { setPollState(null); setLoading(false); }}>Try Again</button>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
@@ -338,11 +234,10 @@ function DisconnectedView() {
   );
 }
 
-// ── Plans View (main portal) ─────────────────────────────────────
+// ── Plans View (main portal - No Payment) ─────────────────────
 function PlansView() {
   const { onPaymentSuccess } = useSession();
   const [plans, setPlans] = useState([]);
-  const [selectedPlan, setSelectedPlan] = useState(null);
   const [showVoucher, setShowVoucher] = useState(false);
   const [loading, setLoading] = useState(true);
   const lastPlanFetch = useRef(Date.now());
@@ -364,12 +259,6 @@ function PlansView() {
     if (action !== 'SESSION_CREATED') toast('Plans have been updated', 'info');
   }, [fetchPlans]));
 
-  const handlePaySuccess = useCallback(async phone => {
-    setSelectedPlan(null);
-    toast('Payment confirmed! Setting up your connection…', 'success');
-    await onPaymentSuccess(phone);
-  }, [onPaymentSuccess]);
-
   const handleVoucherSuccess = useCallback(async (res, phone) => {
     setShowVoucher(false);
     toast(`Voucher redeemed! ${res.planName} active.`, 'success');
@@ -381,7 +270,7 @@ function PlansView() {
       <header className="header header--blue">
         <Logo />
         <h1 className="header-title">Get Connected</h1>
-        <p className="header-sub">Choose a plan and pay with M-Pesa</p>
+        <p className="header-sub">Choose a plan and contact support to activate</p>
       </header>
 
       <div className="content">
@@ -393,22 +282,18 @@ function PlansView() {
         ) : (
           <div className="plans-grid">
             {plans.map(plan => (
-              <PlanCard key={plan.id} plan={plan} onSelect={setSelectedPlan} />
+              <PlanCard key={plan.id} plan={plan} />
             ))}
           </div>
         )}
+        <div style={{ textAlign: 'center', marginTop: '16px', padding: '12px', background: '#FEF3C7', borderRadius: '10px', color: '#D97706', fontSize: '13px', fontWeight: '600' }}>
+          ⚡ Online payments coming soon. Contact support to activate your plan.
+        </div>
         <button className="voucher-link" onClick={() => setShowVoucher(true)}>
           🎟 Have a voucher? Redeem it here
         </button>
       </div>
 
-      {selectedPlan && (
-        <PhoneModal
-          plan={selectedPlan}
-          onClose={() => setSelectedPlan(null)}
-          onSuccess={handlePaySuccess}
-        />
-      )}
       {showVoucher && (
         <VoucherModal
           onClose={() => setShowVoucher(false)}

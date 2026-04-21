@@ -23,10 +23,8 @@
 }
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
 
-/* FIX: Added opacity-50 class */
 .opacity-50 { opacity: 0.5; }
 
-/* SIDEBAR */
 .sidebar{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:10;}
 .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--border);}
 .sidebar-logo-inner{display:flex;align-items:center;gap:10px;}
@@ -47,7 +45,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .admin-name{font-size:13px;font-weight:700;color:var(--text);}
 .admin-role{font-size:11px;color:var(--text3);font-weight:500;}
 
-/* MAIN */
 .main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
 .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;}
 .topbar-title{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.3px;}
@@ -61,13 +58,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 .content{padding:24px;flex:1;}
 
-/* TABS */
 .tab-nav{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:24px;}
 .tab{padding:10px 16px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s;}
 .tab:hover{color:var(--text);}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
 
-/* STATS GRID */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
 .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;}
 .stat-label{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
@@ -77,7 +72,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .stat-change.down{color:var(--red);}
 .stat-icon{float:right;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-top:-4px;}
 
-/* TABLES */
 .table-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
 .table-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .table-title{font-size:14px;font-weight:700;color:var(--text);}
@@ -93,7 +87,6 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .td-strong{font-weight:700;color:var(--text);}
 .td-mono{font-family:var(--mono);font-size:12px;}
 
-/* BADGES */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:0.3px;}
 .badge.green{background:var(--green-t);color:var(--green);}
 .badge.red{background:var(--red-t);color:var(--red);}
@@ -103,7 +96,6 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .badge.purple{background:var(--purple-t);color:var(--purple);}
 .badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
 
-/* BUTTONS */
 .btn{padding:7px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
 .btn-primary{background:var(--blue);color:white;border-color:var(--blue);}
 .btn-primary:hover{background:var(--blue-d);}
@@ -115,7 +107,6 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .btn-green:hover{background:var(--green-d);}
 .btn svg{width:13px;height:13px;fill:currentColor;}
 
-/* PLAN MANAGEMENT */
 .plan-list{display:flex;flex-direction:column;gap:12px;}
 .plan-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;gap:16px;transition:all 0.15s;}
 .plan-item:hover{border-color:var(--border2);}
@@ -131,7 +122,6 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .toggle-knob{width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;transition:all 0.2s;}
 .toggle-switch.on .toggle-knob{left:18px;}
 
-/* CHART */
 .chart-area{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
 .chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .chart-bars{display:flex;align-items:flex-end;gap:8px;height:140px;padding-bottom:24px;position:relative;border-bottom:1px solid var(--border);}
@@ -144,7 +134,6 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);}
 .legend-dot{width:8px;height:8px;border-radius:2px;}
 
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
 .modal-overlay.active{opacity:1;pointer-events:all;}
 .modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;width:480px;max-width:95vw;transform:scale(0.96);transition:transform 0.2s;}
@@ -162,13 +151,11 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .form-hint{font-size:11px;color:var(--text3);}
 .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;}
 
-/* VOUCHER SECTION */
 .voucher-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
 .mini-stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;}
 .mini-stat-label{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
 .mini-stat-val{font-size:22px;font-weight:800;color:var(--text);}
 
-/* AUDIT LOG */
 .audit-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
 .audit-item:last-child{border-bottom:none;}
 .audit-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;}
@@ -177,7 +164,6 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .audit-meta{font-size:11px;color:var(--text3);margin-top:2px;}
 .audit-time{font-size:11px;color:var(--text3);white-space:nowrap;}
 
-/* ROUTER CARD */
 .router-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:10px;}
 .router-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .router-status.online{background:var(--green);}
@@ -192,12 +178,32 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .progress-fill.green{background:var(--green);}
 .progress-fill.orange{background:var(--orange);}
 .progress-fill.red{background:var(--red);}
+
+.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200;display:flex;align-items:center;justify-content:center;z-index:1000;}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;width:400px;max-width:90vw;}
+.login-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:20px;text-align:center;}
+.login-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-family:var(--font);font-size:14px;color:var(--text);margin-bottom:16px;outline:none;}
+.login-input:focus{border-color:var(--blue);}
+.login-btn{width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:12px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;}
+.login-btn:hover{background:var(--blue-d);}
+.login-error{color:var(--red);font-size:13px;margin-bottom:16px;text-align:center;}
 </style>
 </head>
 <body>
 
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay" class="login-overlay">
+  <div class="login-box">
+    <div class="login-title">FastConnect Admin</div>
+    <div id="login-error" class="login-error" style="display:none;"></div>
+    <input type="text" id="login-username" class="login-input" placeholder="Username" autocomplete="off">
+    <input type="password" id="login-password" class="login-input" placeholder="Password">
+    <button class="login-btn" onclick="attemptLogin()">Login</button>
+  </div>
+</div>
+
 <!-- SIDEBAR -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar" style="display:none;">
   <div class="sidebar-logo">
     <div class="sidebar-logo-inner">
       <div class="sidebar-logo-icon">
@@ -218,7 +224,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
     <div class="nav-item" onclick="showTab('users')">
       <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
       Active Users
-      <span class="nav-badge" id="active-count-badge">12</span>
+      <span class="nav-badge" id="active-count-badge">0</span>
     </div>
     <div class="nav-group-label">Management</div>
     <div class="nav-item" onclick="showTab('plans')">
@@ -259,23 +265,20 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 </aside>
 
 <!-- MAIN -->
-<main class="main">
+<main class="main" id="main" style="display:none;">
   <div class="topbar">
     <div class="topbar-title" id="page-title">Dashboard Overview</div>
     <div class="topbar-actions">
       <div class="live-badge"><span class="live-dot"></span>Live</div>
-      <div class="icon-btn" title="Notifications">
-        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-      </div>
-      <div class="icon-btn" title="Settings">
-        <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+      <div class="icon-btn" onclick="logout()" title="Logout">
+        <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
       </div>
     </div>
   </div>
 
   <div class="content">
 
-    <!-- ===== DASHBOARD TAB ===== -->
+    <!-- DASHBOARD TAB -->
     <div id="tab-dashboard">
       <div class="stats-grid">
         <div class="stat-card">
@@ -283,101 +286,65 @@ tr:hover td{background:rgba(255,255,255,0.02);}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--green)"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
           </div>
           <div class="stat-label">Active Users</div>
-          <div class="stat-val" id="stat-active">12</div>
-          <div class="stat-change up">↑ 3 in last hour</div>
+          <div class="stat-val" id="stat-active">0</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:var(--blue-t);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--blue)"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
           </div>
           <div class="stat-label">Today's Revenue</div>
-          <div class="stat-val">KES <span id="stat-revenue">4,280</span></div>
-          <div class="stat-change up">↑ 18% vs yesterday</div>
+          <div class="stat-val">KES <span id="stat-revenue">0</span></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:var(--purple-t);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--purple)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
           </div>
           <div class="stat-label">Total Revenue</div>
-          <div class="stat-val">KES <span>142K</span></div>
-          <div class="stat-change up">↑ All time</div>
+          <div class="stat-val">KES <span id="stat-total-revenue">0</span></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:var(--orange-t);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--orange)"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
           </div>
           <div class="stat-label">Transactions Today</div>
-          <div class="stat-val">87</div>
-          <div class="stat-change up">↑ 12 new</div>
+          <div class="stat-val" id="stat-transactions">0</div>
         </div>
       </div>
 
-      <!-- REVENUE CHART -->
       <div class="chart-area">
         <div class="chart-header">
           <div>
             <div style="font-size:14px;font-weight:700;color:var(--text);">Revenue (Last 7 Days)</div>
             <div style="font-size:12px;color:var(--text2);margin-top:2px;">KES daily totals</div>
           </div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;">Weekly</button>
-            <button class="btn btn-primary" style="font-size:11px;padding:5px 10px;">Monthly</button>
-          </div>
         </div>
         <div class="chart-bars" id="chart-bars"></div>
         <div class="chart-legend">
           <div class="legend-item"><div class="legend-dot" style="background:var(--blue);"></div>Revenue</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div>Transactions</div>
         </div>
-      </div>
-
-      <!-- PLAN BREAKDOWN -->
-      <div class="table-card">
-        <div class="table-header">
-          <div class="table-title">Revenue by Plan Today</div>
-        </div>
-        <table>
-          <thead><tr><th>Plan</th><th>Sales</th><th>Revenue</th><th>% Share</th><th>Trend</th></tr></thead>
-          <tbody>
-            <tr><td class="td-strong">24 Hours</td><td>38</td><td class="td-strong">KES 1,520</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-bar" style="width:80px;"><div class="progress-fill" style="width:65%;"></div></div>65%</div></td><td><span class="badge green">↑ Hot</span></td></tr>
-            <tr><td class="td-strong">8 Hours</td><td>24</td><td class="td-strong">KES 600</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-bar" style="width:80px;"><div class="progress-fill" style="width:40%;"></div></div>40%</div></td><td><span class="badge blue">→ Stable</span></td></tr>
-            <tr><td class="td-strong">Weekly</td><td>8</td><td class="td-strong">KES 1,600</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-bar" style="width:80px;"><div class="progress-fill green" style="width:30%;"></div></div>30%</div></td><td><span class="badge green">↑ Rising</span></td></tr>
-            <tr><td class="td-strong">Monthly</td><td>3</td><td class="td-strong">KES 1,800</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-bar" style="width:80px;"><div class="progress-fill orange" style="width:18%;"></div></div>18%</div></td><td><span class="badge yellow">→ New</span></td></tr>
-          </tbody>
-        </table>
       </div>
     </div>
 
-    <!-- ===== USERS TAB ===== -->
+    <!-- USERS TAB -->
     <div id="tab-users" style="display:none;">
       <div class="table-card">
         <div class="table-header">
-          <div class="table-title">Active Users (12)</div>
+          <div class="table-title">Active Users (<span id="user-count">0</span>)</div>
           <div class="table-actions">
-            <input class="search-input" placeholder="Search phone or plan..." oninput="filterUsers(this.value)">
-            <button class="btn btn-danger" onclick="toast('Bulk disconnect requires confirmation','warn')">
-              <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-              Disconnect All
-            </button>
+            <input class="search-input" placeholder="Search username..." oninput="filterUsers(this.value)">
           </div>
         </div>
         <table>
-          <thead><tr><th>Phone</th><th>Plan</th><th>Time Left</th><th>Connected</th><th>Device</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody id="users-table">
-            <tr><td class="td-mono td-strong">0712 *** 678</td><td>24 Hours</td><td><span style="font-family:var(--mono);color:var(--green);">18:23:41</span></td><td>6:45 PM</td><td class="td-mono" style="font-size:11px;">fc_8x2k9</td><td><span class="badge green"><span class="badge-dot"></span>Online</span></td><td><button class="btn btn-danger btn-sm" onclick="disconnectUser(this)">Disconnect</button></td></tr>
-            <tr><td class="td-mono td-strong">0722 *** 441</td><td>Weekly</td><td><span style="font-family:var(--mono);color:var(--green);">5d 12:00</span></td><td>Yesterday</td><td class="td-mono" style="font-size:11px;">fc_3m7n2</td><td><span class="badge green"><span class="badge-dot"></span>Online</span></td><td><button class="btn btn-danger btn-sm" onclick="disconnectUser(this)">Disconnect</button></td></tr>
-            <tr><td class="td-mono td-strong">0733 *** 902</td><td>8 Hours</td><td><span style="font-family:var(--mono);color:var(--orange);">01:12:08</span></td><td>3:30 PM</td><td class="td-mono" style="font-size:11px;">fc_9p1q4</td><td><span class="badge green"><span class="badge-dot"></span>Online</span></td><td><button class="btn btn-danger btn-sm" onclick="disconnectUser(this)">Disconnect</button></td></tr>
-            <tr><td class="td-mono td-strong">0700 *** 115</td><td>2 Hours</td><td><span style="font-family:var(--mono);color:var(--red);">00:08:34</span></td><td>5:52 PM</td><td class="td-mono" style="font-size:11px;">fc_2v5w8</td><td><span class="badge green"><span class="badge-dot"></span>Online</span></td><td><button class="btn btn-danger btn-sm" onclick="disconnectUser(this)">Disconnect</button></td></tr>
-            <tr><td class="td-mono td-strong">0711 *** 337</td><td>Monthly</td><td><span style="font-family:var(--mono);color:var(--green);">22d 6:00</span></td><td>2 days ago</td><td class="td-mono" style="font-size:11px;">fc_6h3j1</td><td><span class="badge orange"><span class="badge-dot"></span>Idle</span></td><td><button class="btn btn-danger btn-sm" onclick="disconnectUser(this)">Disconnect</button></td></tr>
-          </tbody>
+          <thead><tr><th>Username</th><th>Plan</th><th>Time Left</th><th>Connected Since</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="users-table"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ===== PLANS TAB ===== -->
+    <!-- PLANS TAB -->
     <div id="tab-plans" style="display:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <div style="font-size:13px;color:var(--text2);">Drag to reorder · Toggle to enable/disable · Edit prices in real-time</div>
+        <div style="font-size:13px;color:var(--text2);">Toggle to enable/disable · Edit prices in real-time</div>
         <button class="btn btn-primary" onclick="openPlanModal()">
           <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
           Add Plan
@@ -386,78 +353,57 @@ tr:hover td{background:rgba(255,255,255,0.02);}
       <div class="plan-list" id="plan-list"></div>
     </div>
 
-    <!-- ===== VOUCHERS TAB ===== -->
+    <!-- VOUCHERS TAB -->
     <div id="tab-vouchers" style="display:none;">
       <div class="voucher-stats">
-        <div class="mini-stat"><div class="mini-stat-label">Total Generated</div><div class="mini-stat-val">248</div></div>
-        <div class="mini-stat"><div class="mini-stat-label">Used</div><div class="mini-stat-val" style="color:var(--green);">189</div></div>
-        <div class="mini-stat"><div class="mini-stat-label">Unused</div><div class="mini-stat-val" style="color:var(--orange);">59</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Total Generated</div><div class="mini-stat-val" id="voucher-total">0</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Used</div><div class="mini-stat-val" id="voucher-used" style="color:var(--green);">0</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Unused</div><div class="mini-stat-val" id="voucher-unused" style="color:var(--orange);">0</div></div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <div style="font-size:13px;color:var(--text2);">Voucher codes in FC-XXXX-XXXX format</div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-ghost" onclick="toast('Exporting vouchers CSV...','info')">Export CSV</button>
-          <button class="btn btn-primary" onclick="openVoucherGenModal()">Generate Vouchers</button>
-        </div>
+        <button class="btn btn-primary" onclick="openVoucherGenModal()">Generate Vouchers</button>
       </div>
       <div class="table-card">
         <table>
           <thead><tr><th>Code</th><th>Plan</th><th>Status</th><th>Used By</th><th>Expires</th><th>Action</th></tr></thead>
-          <tbody>
-            <tr><td class="td-mono td-strong">FC-DEMO-2024</td><td>24 Hours</td><td><span class="badge green">Available</span></td><td>—</td><td>31 Dec 2026</td><td><button class="btn btn-danger" onclick="toast('Voucher revoked','warn')">Revoke</button></td></tr>
-            <tr><td class="td-mono td-strong">FC-A7K2-X9P1</td><td>Weekly</td><td><span class="badge red">Used</span></td><td class="td-mono">0712***678</td><td>01 Jan 2026</td><td><button class="btn btn-ghost" disabled style="opacity:0.4;">Revoke</button></td></tr>
-            <tr><td class="td-mono td-strong">FC-B3M5-N8Q4</td><td>24 Hours</td><td><span class="badge green">Available</span></td><td>—</td><td>15 May 2026</td><td><button class="btn btn-danger" onclick="toast('Voucher revoked','warn')">Revoke</button></td></tr>
-            <tr><td class="td-mono td-strong">FC-C1R7-V2W6</td><td>8 Hours</td><td><span class="badge yellow">Expired</span></td><td>—</td><td>01 Apr 2026</td><td><button class="btn btn-ghost" disabled style="opacity:0.4;">Expired</button></td></tr>
-          </tbody>
+          <tbody id="vouchers-table"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ===== REPORTS TAB ===== -->
+    <!-- REPORTS TAB -->
     <div id="tab-reports" style="display:none;">
       <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center;">
-        <input type="date" class="form-input" value="2026-04-01" style="width:150px;">
+        <input type="date" class="form-input" id="report-from" value="2026-04-01" style="width:150px;">
         <span style="color:var(--text3);">to</span>
-        <input type="date" class="form-input" value="2026-04-20" style="width:150px;">
-        <button class="btn btn-primary">Apply</button>
-        <button class="btn btn-ghost" onclick="toast('Exporting report...','info')">Export CSV</button>
+        <input type="date" class="form-input" id="report-to" value="2026-04-21" style="width:150px;">
+        <button class="btn btn-primary" onclick="loadSalesReport()">Apply</button>
       </div>
-      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
-        <div class="stat-card"><div class="stat-label">Period Revenue</div><div class="stat-val">KES 58,420</div><div class="stat-change up">↑ 22% vs last period</div></div>
-        <div class="stat-card"><div class="stat-label">Transactions</div><div class="stat-val">1,247</div><div class="stat-change up">↑ 8% growth</div></div>
-        <div class="stat-card"><div class="stat-label">Avg Transaction</div><div class="stat-val">KES 46.8</div><div class="stat-change up">↑ 13% increase</div></div>
-      </div>
-      <div class="chart-area">
-        <div class="chart-header"><div style="font-size:14px;font-weight:700;color:var(--text);">Daily Revenue — April 2026</div></div>
-        <div class="chart-bars" id="report-chart"></div>
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);" id="report-summary">
+        <div class="stat-card"><div class="stat-label">Period Revenue</div><div class="stat-val">KES 0</div></div>
+        <div class="stat-card"><div class="stat-label">Transactions</div><div class="stat-val">0</div></div>
+        <div class="stat-card"><div class="stat-label">Avg Transaction</div><div class="stat-val">KES 0</div></div>
       </div>
     </div>
 
-    <!-- ===== ROUTERS TAB ===== -->
+    <!-- ROUTERS TAB -->
     <div id="tab-routers" style="display:none;">
       <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
         <div style="font-size:13px;color:var(--text2);">MikroTik RouterOS managed devices</div>
-        <button class="btn btn-primary">Add Router</button>
+        <button class="btn btn-primary" onclick="addRouter()">Add Router</button>
       </div>
-      <div id="router-list">
-        <div class="router-card"><div class="router-status online"></div><div class="router-info"><div class="router-name">Router 01 — Westlands</div><div class="router-ip">192.168.1.1:8728</div></div><div class="router-users">8 active users</div><span class="badge green">Online</span><button class="btn btn-ghost" style="margin-left:8px;">Configure</button></div>
-        <div class="router-card"><div class="router-status online"></div><div class="router-info"><div class="router-name">Router 02 — Kilimani</div><div class="router-ip">192.168.2.1:8728</div></div><div class="router-users">4 active users</div><span class="badge green">Online</span><button class="btn btn-ghost" style="margin-left:8px;">Configure</button></div>
-        <div class="router-card"><div class="router-status offline"></div><div class="router-info"><div class="router-name">Router 03 — Karen</div><div class="router-ip">192.168.3.1:8728</div></div><div class="router-users">0 active users</div><span class="badge red">Offline</span><button class="btn btn-ghost" style="margin-left:8px;">Reconnect</button></div>
-      </div>
+      <div id="router-list"></div>
     </div>
 
-    <!-- ===== SECURITY TAB ===== -->
+    <!-- SECURITY TAB -->
     <div id="tab-security" style="display:none;">
       <div class="table-card" style="padding:20px;">
         <div style="margin-bottom:20px;">
           <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;">Admin Authentication</div>
           <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:10px;">
             <div><div style="font-size:13px;font-weight:700;color:var(--text);">Two-Factor Authentication</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">TOTP via Google Authenticator</div></div>
-            <div class="toggle-switch on" onclick="this.classList.toggle('on');toast('2FA settings updated','success')"><div class="toggle-knob"></div></div>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--bg3);border-radius:var(--radius-sm);">
-            <div><div style="font-size:13px;font-weight:700;color:var(--text);">IP Whitelist</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">Restrict admin access by IP</div></div>
-            <div class="toggle-switch" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            <div class="toggle-switch" onclick="toggle2FA()"><div class="toggle-knob"></div></div>
           </div>
         </div>
         <div>
@@ -465,39 +411,22 @@ tr:hover td{background:rgba(255,255,255,0.02);}
           <div style="display:grid;gap:8px;">
             <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;"><span style="color:var(--text2);">Global</span><span style="color:var(--green);font-weight:700;">100 req/min/IP</span><span class="badge green">Active</span></div>
             <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;"><span style="color:var(--text2);">Login</span><span style="color:var(--green);font-weight:700;">5 attempts → 30min lockout</span><span class="badge green">Active</span></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;"><span style="color:var(--text2);">Payments</span><span style="color:var(--green);font-weight:700;">3 req/min/phone</span><span class="badge green">Active</span></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ===== AUDIT TAB ===== -->
+    <!-- AUDIT TAB -->
     <div id="tab-audit" style="display:none;">
       <div class="table-card">
         <div class="table-header">
           <div class="table-title">Audit Log</div>
-          <div class="table-actions">
-            <select class="form-input" style="width:150px;padding:7px 10px;">
-              <option>All Events</option>
-              <option>Plan Changes</option>
-              <option>Payments</option>
-              <option>Logins</option>
-              <option>Disconnects</option>
-            </select>
-          </div>
         </div>
-        <div style="padding:4px 16px;" id="audit-log">
-          <div class="audit-item"><div class="audit-icon" style="background:var(--blue-t);">✏️</div><div class="audit-body"><div class="audit-action">Plan "24 Hours" updated — KES 40 → KES 50</div><div class="audit-meta">admin · IP: 41.90.xxx.xxx · 3 active sessions preserved</div></div><div class="audit-time">5 min ago</div></div>
-          <div class="audit-item"><div class="audit-icon" style="background:var(--green-t);">💳</div><div class="audit-body"><div class="audit-action">Payment received — KES 40 from 0712***678</div><div class="audit-meta">Receipt: RKQ7XT82K1 · Plan: 24 Hours</div></div><div class="audit-time">12 min ago</div></div>
-          <div class="audit-item"><div class="audit-icon" style="background:var(--purple-t);">🔐</div><div class="audit-body"><div class="audit-action">Admin login successful</div><div class="audit-meta">admin · IP: 41.90.xxx.xxx · 2FA verified</div></div><div class="audit-time">1 hr ago</div></div>
-          <div class="audit-item"><div class="audit-icon" style="background:var(--orange-t);">🔌</div><div class="audit-body"><div class="audit-action">User 0733***902 force disconnected</div><div class="audit-meta">By admin · Device: fc_9p1q4</div></div><div class="audit-time">2 hr ago</div></div>
-          <div class="audit-item"><div class="audit-icon" style="background:var(--yellow-t);">🎟</div><div class="audit-body"><div class="audit-action">50 vouchers generated for "Weekly" plan</div><div class="audit-meta">By admin · Expires: 31 Dec 2026</div></div><div class="audit-time">3 hr ago</div></div>
-          <div class="audit-item"><div class="audit-icon" style="background:var(--red-t);">⚠️</div><div class="audit-body"><div class="audit-action">Router 03 (Karen) went offline</div><div class="audit-meta">Automatic health check · 0 users affected</div></div><div class="audit-time">5 hr ago</div></div>
-        </div>
+        <div style="padding:4px 16px;" id="audit-log"></div>
       </div>
     </div>
 
-  </div><!-- /content -->
+  </div>
 </main>
 
 <!-- PLAN MODAL -->
@@ -508,17 +437,13 @@ tr:hover td{background:rgba(255,255,255,0.02);}
       <button class="modal-x" onclick="closeAdminModal('plan-modal')">×</button>
     </div>
     <div class="form-grid">
-      <div class="form-group full"><label class="form-label">Plan Name</label><input class="form-input" id="plan-name-input" placeholder="e.g. 24 Hours" value=""></div>
-      <div class="form-group"><label class="form-label">Duration (Hours)</label><input class="form-input" id="plan-duration-input" type="number" placeholder="24" value=""></div>
-      <div class="form-group"><label class="form-label">Price (KES)</label><input class="form-input" id="plan-price-input" type="number" placeholder="40" value=""></div>
-      <div class="form-group"><label class="form-label">Bandwidth (Mbps)</label><input class="form-input" id="plan-bandwidth-input" type="number" placeholder="2" value="2"></div>
+      <div class="form-group full"><label class="form-label">Plan Name</label><input class="form-input" id="plan-name-input" placeholder="e.g. 24 Hours"></div>
+      <div class="form-group"><label class="form-label">Duration (Hours)</label><input class="form-input" id="plan-duration-input" type="number" placeholder="24"></div>
+      <div class="form-group"><label class="form-label">Price (KES)</label><input class="form-input" id="plan-price-input" type="number" placeholder="40"></div>
+      <div class="form-group"><label class="form-label">Bandwidth (Mbps)</label><input class="form-input" id="plan-bandwidth-input" type="number" placeholder="2"></div>
       <div class="form-group"><label class="form-label">Mark as Popular</label>
         <select class="form-input" id="plan-popular-input"><option value="0">No</option><option value="1">Yes</option></select>
       </div>
-      <div class="form-group full"><label class="form-label">Features JSON</label><input class="form-input" id="plan-features-input" placeholder='{"unlimited_data":true,"speed":"2 Mbps"}'><div class="form-hint">Will be displayed on captive portal plan cards</div></div>
-    </div>
-    <div id="plan-modal-notice" style="display:none;background:var(--yellow-t);border:1px solid rgba(234,179,8,0.3);border-radius:var(--radius-sm);padding:10px 14px;margin-top:14px;font-size:12px;color:var(--yellow);">
-      ⚠️ Editing this plan will update the captive portal in real-time. Active sessions will be preserved with their original terms.
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeAdminModal('plan-modal')">Cancel</button>
@@ -536,10 +461,10 @@ tr:hover td{background:rgba(255,255,255,0.02);}
     </div>
     <div class="form-grid">
       <div class="form-group full"><label class="form-label">Select Plan</label>
-        <select class="form-input" id="voucher-plan"><option>2 Hours — KES 10</option><option>4 Hours — KES 15</option><option>8 Hours — KES 25</option><option selected>24 Hours — KES 40</option><option>Weekly — KES 200</option><option>Monthly — KES 600</option></select>
+        <select class="form-input" id="voucher-plan-id"></select>
       </div>
-      <div class="form-group"><label class="form-label">Quantity</label><input class="form-input" type="number" placeholder="50" value="50"></div>
-      <div class="form-group"><label class="form-label">Validity (Days)</label><input class="form-input" type="number" placeholder="365" value="365"></div>
+      <div class="form-group"><label class="form-label">Quantity</label><input class="form-input" type="number" id="voucher-quantity" value="10"></div>
+      <div class="form-group"><label class="form-label">Validity (Days)</label><input class="form-input" type="number" id="voucher-validity" value="365"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeAdminModal('voucher-modal')">Cancel</button>
@@ -552,24 +477,82 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 <div id="admin-toasts" style="position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;"></div>
 
 <script>
-// ===== API BASE URL - FIXED =====
-const API_BASE = (() => {
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:3000';
-  }
-  return `https://${window.location.hostname}`;
-})();
+// ===== CONFIGURATION =====
+const API_BASE = 'https://fastconnect-backend.onrender.com';
+let authToken = localStorage.getItem('admin_token');
+let currentPlans = [];
 
-// Helper function for API calls
+// ===== AUTH FUNCTIONS =====
+async function attemptLogin() {
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
+  const errorEl = document.getElementById('login-error');
+  
+  if (!username || !password) {
+    errorEl.textContent = 'Please enter username and password';
+    errorEl.style.display = 'block';
+    return;
+  }
+  
+  try {
+    const response = await fetch(`${API_BASE}/api/admin/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    
+    const data = await response.json();
+    
+    if (data.accessToken) {
+      authToken = data.accessToken;
+      localStorage.setItem('admin_token', authToken);
+      document.getElementById('login-overlay').style.display = 'none';
+      document.getElementById('sidebar').style.display = 'flex';
+      document.getElementById('main').style.display = 'flex';
+      toast('Login successful!', 'success');
+      loadDashboardStats();
+      loadActiveUsers();
+      loadPlans();
+    } else {
+      errorEl.textContent = data.error || 'Invalid credentials';
+      errorEl.style.display = 'block';
+    }
+  } catch (err) {
+    errorEl.textContent = 'Connection error. Please try again.';
+    errorEl.style.display = 'block';
+  }
+}
+
+function logout() {
+  authToken = null;
+  localStorage.removeItem('admin_token');
+  document.getElementById('login-overlay').style.display = 'flex';
+  document.getElementById('sidebar').style.display = 'none';
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  toast('Logged out successfully', 'info');
+}
+
+function getAuthHeaders() {
+  return { 'Authorization': `Bearer ${authToken}` };
+}
+
+// ===== API CALLS =====
 async function apiCall(endpoint, options = {}) {
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
   const response = await fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
       ...options.headers,
     },
   });
+  if (response.status === 401) {
+    logout();
+    throw new Error('Session expired');
+  }
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
     throw new Error(error.error || `HTTP ${response.status}`);
@@ -577,121 +560,105 @@ async function apiCall(endpoint, options = {}) {
   return response.json();
 }
 
-// ===== DATA =====
-let adminPlans = [
-  {id:1,name:'2 Hours',duration:2,price:10,bandwidth:2,popular:false,active:true},
-  {id:2,name:'4 Hours',duration:4,price:15,bandwidth:2,popular:false,active:true},
-  {id:3,name:'8 Hours',duration:8,price:25,bandwidth:2,popular:false,active:true},
-  {id:4,name:'24 Hours',duration:24,price:40,bandwidth:2,popular:true,active:true},
-  {id:5,name:'Weekly',duration:168,price:200,bandwidth:2,popular:false,active:true},
-  {id:6,name:'Monthly',duration:720,price:600,bandwidth:2,popular:false,active:true},
-];
-let editingPlanId = null;
-let authToken = null;
-
-// ===== AUTH =====
-async function login() {
-  try {
-    const response = await apiCall('/api/admin/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ username: 'admin', password: 'Admin@FastConnect2024!' })
-    });
-    if (response.accessToken) {
-      authToken = response.accessToken;
-      localStorage.setItem('admin_token', authToken);
-      toast('Logged in successfully', 'success');
-      loadDashboardStats();
-      return true;
-    }
-    return false;
-  } catch (err) {
-    toast('Login failed: ' + err.message, 'error');
-    return false;
-  }
-}
-
-function getAuthHeaders() {
-  return { 'Authorization': `Bearer ${authToken || localStorage.getItem('admin_token')}` };
-}
-
-// ===== DASHBOARD STATS =====
+// ===== DASHBOARD =====
 async function loadDashboardStats() {
   try {
-    const stats = await apiCall('/api/admin/dashboard/stats', {
-      headers: getAuthHeaders()
-    });
-    document.getElementById('stat-active').textContent = stats.activeUsers;
-    document.getElementById('stat-revenue').textContent = stats.todayRevenue.toLocaleString();
-    document.getElementById('active-count-badge').textContent = stats.activeUsers;
+    const stats = await apiCall('/api/admin/dashboard/stats');
+    document.getElementById('stat-active').textContent = stats.activeUsers || 0;
+    document.getElementById('stat-revenue').textContent = (stats.todayRevenue || 0).toLocaleString();
+    document.getElementById('stat-total-revenue').textContent = (stats.totalRevenue || 0).toLocaleString();
+    document.getElementById('stat-transactions').textContent = stats.todayTransactions || 0;
+    document.getElementById('active-count-badge').textContent = stats.activeUsers || 0;
   } catch (err) {
     console.error('Failed to load stats', err);
   }
 }
 
-// ===== TABS =====
-const tabMap = {
-  dashboard:'Dashboard Overview',users:'Active Users',plans:'Pricing Plans',
-  vouchers:'Voucher Management',reports:'Sales Reports',routers:'Router Management',
-  security:'Security Settings',audit:'Audit Logs'
-};
+// ===== ACTIVE USERS (REAL ONLY) =====
+async function loadActiveUsers() {
+  try {
+    const data = await apiCall('/api/admin/sessions/active');
+    const sessions = data.sessions || [];
+    const tbody = document.getElementById('users-table');
+    tbody.innerHTML = '';
+    
+    sessions.forEach(session => {
+      const row = tbody.insertRow();
+      const remaining = session.remainingSeconds || 0;
+      const hours = Math.floor(remaining / 3600);
+      const minutes = Math.floor((remaining % 3600) / 60);
+      const timeLeft = `${hours}h ${minutes}m`;
+      
+      row.innerHTML = `
+        <td class="td-mono td-strong">${session.hotspot_username || 'Unknown'}</td>
+        <td>${session.plan_name || 'Unknown'}</td>
+        <td><span style="font-family:var(--mono);color:var(--green);">${timeLeft}</span></td>
+        <td>${new Date(session.start_time).toLocaleString()}</td>
+        <td><span class="badge green"><span class="badge-dot"></span>Online</span></td>
+        <td><button class="btn btn-danger btn-sm" onclick="disconnectUser(${session.id})">Disconnect</button></td>
+      `;
+    });
+    
+    document.getElementById('user-count').textContent = sessions.length;
+  } catch (err) {
+    console.error('Failed to load users', err);
+  }
+}
 
-function showTab(tab){
-  Object.keys(tabMap).forEach(t=>{
-    const el = document.getElementById(`tab-${t}`);
-    if(el) el.style.display = t===tab?'':'none';
+async function disconnectUser(sessionId) {
+  if (!confirm('Disconnect this user?')) return;
+  try {
+    await apiCall(`/api/admin/sessions/${sessionId}/disconnect`, { method: 'POST' });
+    toast('User disconnected', 'success');
+    loadActiveUsers();
+    loadDashboardStats();
+  } catch (err) {
+    toast('Failed to disconnect user', 'error');
+  }
+}
+
+function filterUsers(query) {
+  const rows = document.querySelectorAll('#users-table tr');
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(query.toLowerCase()) ? '' : 'none';
   });
-  document.querySelectorAll('.nav-item').forEach(n=>{
-    n.classList.toggle('active', n.getAttribute('onclick')===`showTab('${tab}')`);
-  });
-  document.getElementById('page-title').textContent = tabMap[tab]||tab;
-  if(tab==='dashboard') { renderChart(); loadDashboardStats(); }
-  if(tab==='reports') renderReportChart();
-  if(tab==='plans') renderAdminPlans();
 }
 
-// ===== CHART =====
-const revenueData = [2100,3400,2800,4100,3700,5200,4280];
-const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-
-function renderChart(){
-  const max = Math.max(...revenueData);
-  document.getElementById('chart-bars').innerHTML = revenueData.map((v,i)=>`
-    <div class="chart-bar-wrap">
-      <div style="font-size:10px;color:var(--text2);font-weight:600;">${v.toLocaleString()}</div>
-      <div class="chart-bar" style="height:${Math.round((v/max)*110)}px;" title="KES ${v.toLocaleString()}">
-        <div class="chart-bar-label">${days[i]}</div>
-      </div>
-    </div>
-  `).join('');
+// ===== PLANS MANAGEMENT (REAL-TIME UPDATES) =====
+async function loadPlans() {
+  try {
+    const data = await apiCall('/api/admin/plans');
+    currentPlans = data.plans || [];
+    renderAdminPlans();
+    
+    // Update voucher plan dropdown
+    const planSelect = document.getElementById('voucher-plan-id');
+    if (planSelect) {
+      planSelect.innerHTML = currentPlans.filter(p => p.is_active).map(p => 
+        `<option value="${p.id}">${p.name} — KES ${p.price_kes}</option>`
+      ).join('');
+    }
+  } catch (err) {
+    console.error('Failed to load plans', err);
+  }
 }
 
-function renderReportChart(){
-  const data = Array.from({length:20},(_,i)=>Math.floor(Math.random()*3000+1000));
-  const max = Math.max(...data);
-  document.getElementById('report-chart').innerHTML = data.map((v,i)=>`
-    <div class="chart-bar-wrap">
-      <div class="chart-bar" style="height:${Math.round((v/max)*110)}px;"></div>
-    </div>
-  `).join('');
-}
-
-// ===== PLANS MANAGEMENT =====
-function renderAdminPlans(){
+function renderAdminPlans() {
   const list = document.getElementById('plan-list');
-  list.innerHTML = adminPlans.map(p=>`
-    <div class="plan-item${p.popular?' popular':''}${p.active?'':' opacity-50'}" id="pi-${p.id}" style="${p.active?'':'opacity:0.5'}">
-      <span class="drag-handle">⠿</span>
+  list.innerHTML = currentPlans.map(p => `
+    <div class="plan-item${p.is_popular ? ' popular' : ''}${!p.is_active ? ' opacity-50' : ''}" id="pi-${p.id}">
       <div class="plan-info">
-        <div class="plan-item-name">${p.name} ${p.popular?'<span style="font-size:11px;background:var(--blue-t);color:var(--blue);padding:2px 8px;border-radius:100px;font-weight:700;">Popular</span>':''}</div>
+        <div class="plan-item-name">${p.name} ${p.is_popular ? '<span style="font-size:11px;background:var(--blue-t);color:var(--blue);padding:2px 8px;border-radius:100px;font-weight:700;">Popular</span>' : ''}</div>
         <div class="plan-item-meta">
-          <span>${p.duration}h duration</span>
-          <span>${p.bandwidth} Mbps</span>
+          <span>${p.duration_hours}h duration</span>
+          <span>${p.bandwidth_limit_mbps} Mbps</span>
           <span>Unlimited data</span>
         </div>
       </div>
-      <div class="plan-item-price">KES ${p.price}</div>
+      <div class="plan-item-price">KES ${p.price_kes}</div>
       <div class="plan-item-actions">
-        <div class="toggle-switch${p.active?' on':''}" onclick="togglePlan(${p.id})"><div class="toggle-knob"></div></div>
+        <div class="toggle-switch${p.is_active ? ' on' : ''}" onclick="togglePlan(${p.id})"><div class="toggle-knob"></div></div>
         <button class="btn btn-ghost" onclick="openPlanModal(${p.id})">Edit</button>
         <button class="btn btn-danger" onclick="deletePlan(${p.id})">Delete</button>
       </div>
@@ -699,110 +666,243 @@ function renderAdminPlans(){
   `).join('');
 }
 
-function togglePlan(id){
-  const p = adminPlans.find(p=>p.id===id);
-  p.active = !p.active;
-  renderAdminPlans();
-  toast(`Plan "${p.name}" ${p.active?'activated':'deactivated'}`,'info');
+async function togglePlan(id) {
+  const plan = currentPlans.find(p => p.id === id);
+  if (!plan) return;
+  
+  try {
+    await apiCall(`/api/admin/plans/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ ...plan, is_active: !plan.is_active })
+    });
+    toast(`Plan "${plan.name}" ${!plan.is_active ? 'activated' : 'deactivated'}`, 'success');
+    loadPlans();
+  } catch (err) {
+    toast('Failed to update plan', 'error');
+  }
 }
 
-function openPlanModal(id=null){
+let editingPlanId = null;
+
+function openPlanModal(id = null) {
   editingPlanId = id;
   const modal = document.getElementById('plan-modal');
-  const notice = document.getElementById('plan-modal-notice');
-  if(id){
-    const p = adminPlans.find(p=>p.id===id);
+  if (id) {
+    const p = currentPlans.find(p => p.id === id);
     document.getElementById('plan-modal-title').textContent = `Edit Plan — ${p.name}`;
     document.getElementById('plan-name-input').value = p.name;
-    document.getElementById('plan-duration-input').value = p.duration;
-    document.getElementById('plan-price-input').value = p.price;
-    document.getElementById('plan-bandwidth-input').value = p.bandwidth;
-    document.getElementById('plan-popular-input').value = p.popular?'1':'0';
-    notice.style.display='block';
+    document.getElementById('plan-duration-input').value = p.duration_hours;
+    document.getElementById('plan-price-input').value = p.price_kes;
+    document.getElementById('plan-bandwidth-input').value = p.bandwidth_limit_mbps;
+    document.getElementById('plan-popular-input').value = p.is_popular ? '1' : '0';
   } else {
     document.getElementById('plan-modal-title').textContent = 'Add New Plan';
-    ['name','duration','price','bandwidth'].forEach(f=>document.getElementById(`plan-${f}-input`).value='');
+    document.getElementById('plan-name-input').value = '';
+    document.getElementById('plan-duration-input').value = '';
+    document.getElementById('plan-price-input').value = '';
     document.getElementById('plan-bandwidth-input').value = '2';
-    notice.style.display='none';
+    document.getElementById('plan-popular-input').value = '0';
   }
   modal.classList.add('active');
 }
 
-function savePlan(){
+async function savePlan() {
   const name = document.getElementById('plan-name-input').value;
-  const price = parseInt(document.getElementById('plan-price-input').value)||0;
-  const duration = parseInt(document.getElementById('plan-duration-input').value)||0;
-  if(!name||!price||!duration){toast('Please fill all required fields','error');return;}
-  if(editingPlanId){
-    const p = adminPlans.find(p=>p.id===editingPlanId);
-    p.name=name;p.price=price;p.duration=duration;
-    p.bandwidth=parseInt(document.getElementById('plan-bandwidth-input').value)||2;
-    p.popular=document.getElementById('plan-popular-input').value==='1';
-    toast(`Plan "${name}" updated & broadcast to portal`,'success');
-  } else {
-    adminPlans.push({id:Date.now(),name,price,duration,bandwidth:parseInt(document.getElementById('plan-bandwidth-input').value)||2,popular:document.getElementById('plan-popular-input').value==='1',active:true});
-    toast(`Plan "${name}" created`,'success');
+  const price = parseInt(document.getElementById('plan-price-input').value) || 0;
+  const duration = parseInt(document.getElementById('plan-duration-input').value) || 0;
+  const bandwidth = parseInt(document.getElementById('plan-bandwidth-input').value) || 2;
+  const isPopular = document.getElementById('plan-popular-input').value === '1';
+  
+  if (!name || !price || !duration) {
+    toast('Please fill all required fields', 'error');
+    return;
   }
-  closeAdminModal('plan-modal');
-  renderAdminPlans();
-}
-
-function deletePlan(id){
-  const p = adminPlans.find(p=>p.id===id);
-  if(confirm(`Delete plan "${p.name}"? This will prevent new purchases but preserve active sessions.`)){
-    adminPlans = adminPlans.filter(p=>p.id!==id);
-    renderAdminPlans();
-    toast(`Plan "${p.name}" deleted`,'warn');
+  
+  try {
+    if (editingPlanId) {
+      await apiCall(`/api/admin/plans/${editingPlanId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ name, price_kes: price, duration_hours: duration, bandwidth_limit_mbps: bandwidth, is_popular: isPopular, is_active: true })
+      });
+      toast(`Plan "${name}" updated - Portal will refresh automatically`, 'success');
+    } else {
+      await apiCall('/api/admin/plans', {
+        method: 'POST',
+        body: JSON.stringify({ name, price_kes: price, duration_hours: duration, bandwidth_limit_mbps: bandwidth, is_popular: isPopular })
+      });
+      toast(`Plan "${name}" created`, 'success');
+    }
+    closeAdminModal('plan-modal');
+    loadPlans();
+  } catch (err) {
+    toast('Failed to save plan', 'error');
   }
 }
 
-// ===== USERS =====
-function filterUsers(q){
-  const rows = document.querySelectorAll('#users-table tr');
-  rows.forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});
-}
-
-function disconnectUser(btn){
-  const row = btn.closest('tr');
-  const phone = row.cells[0].textContent;
-  toast(`User ${phone} disconnected`,'warn');
-  row.cells[5].innerHTML='<span class="badge red">Offline</span>';
-  btn.disabled=true;btn.textContent='Done';
+async function deletePlan(id) {
+  const plan = currentPlans.find(p => p.id === id);
+  if (!confirm(`Delete plan "${plan.name}"? This will prevent new purchases but preserve active sessions.`)) return;
+  
+  try {
+    await apiCall(`/api/admin/plans/${id}`, { method: 'DELETE' });
+    toast(`Plan "${plan.name}" deleted`, 'warn');
+    loadPlans();
+  } catch (err) {
+    toast('Failed to delete plan', 'error');
+  }
 }
 
 // ===== VOUCHERS =====
-function generateVouchers(){
-  closeAdminModal('voucher-modal');
-  toast('50 vouchers generated & CSV exported','success');
+async function generateVouchers() {
+  const planId = document.getElementById('voucher-plan-id').value;
+  const quantity = parseInt(document.getElementById('voucher-quantity').value) || 10;
+  const validityDays = parseInt(document.getElementById('voucher-validity').value) || 365;
+  
+  try {
+    const result = await apiCall('/api/admin/vouchers/generate', {
+      method: 'POST',
+      body: JSON.stringify({ planId, quantity, validityDays })
+    });
+    toast(`${result.generated} vouchers generated!`, 'success');
+    closeAdminModal('voucher-modal');
+  } catch (err) {
+    toast('Failed to generate vouchers', 'error');
+  }
+}
+
+// ===== SALES REPORT =====
+async function loadSalesReport() {
+  const from = document.getElementById('report-from').value;
+  const to = document.getElementById('report-to').value;
+  
+  try {
+    const data = await apiCall(`/api/admin/reports/sales?from=${from}&to=${to}`);
+    const summary = data.summary || [];
+    let totalRevenue = 0;
+    let totalTransactions = 0;
+    
+    summary.forEach(day => {
+      totalRevenue += day.revenue;
+      totalTransactions += day.transactions;
+    });
+    
+    const avgTransaction = totalTransactions > 0 ? Math.round(totalRevenue / totalTransactions) : 0;
+    
+    document.getElementById('report-summary').innerHTML = `
+      <div class="stat-card"><div class="stat-label">Period Revenue</div><div class="stat-val">KES ${totalRevenue.toLocaleString()}</div></div>
+      <div class="stat-card"><div class="stat-label">Transactions</div><div class="stat-val">${totalTransactions}</div></div>
+      <div class="stat-card"><div class="stat-label">Avg Transaction</div><div class="stat-val">KES ${avgTransaction.toLocaleString()}</div></div>
+    `;
+  } catch (err) {
+    toast('Failed to load report', 'error');
+  }
+}
+
+// ===== ROUTERS =====
+function addRouter() {
+  toast('Router management coming soon', 'info');
+}
+
+// ===== SECURITY =====
+function toggle2FA() {
+  toast('2FA setup would be configured here', 'info');
+}
+
+// ===== TABS =====
+const tabMap = {
+  dashboard: 'Dashboard Overview',
+  users: 'Active Users',
+  plans: 'Pricing Plans',
+  vouchers: 'Voucher Management',
+  reports: 'Sales Reports',
+  routers: 'Router Management',
+  security: 'Security Settings',
+  audit: 'Audit Logs'
+};
+
+function showTab(tab) {
+  Object.keys(tabMap).forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) el.style.display = t === tab ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.getAttribute('onclick') === `showTab('${tab}')`);
+  });
+  document.getElementById('page-title').textContent = tabMap[tab] || tab;
+  
+  if (tab === 'dashboard') loadDashboardStats();
+  if (tab === 'users') loadActiveUsers();
+  if (tab === 'plans') loadPlans();
+  if (tab === 'reports') loadSalesReport();
 }
 
 // ===== MODALS =====
-function openVoucherGenModal(){document.getElementById('voucher-modal').classList.add('active');}
-function closeAdminModal(id){document.getElementById(id).classList.remove('active');}
-document.querySelectorAll('.modal-overlay').forEach(o=>{
-  o.addEventListener('click',e=>{if(e.target===o)closeAdminModal(o.id);});
+function openVoucherGenModal() {
+  document.getElementById('voucher-modal').classList.add('active');
+}
+
+function closeAdminModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) closeAdminModal(o.id); });
 });
 
+// ===== CHART =====
+function renderChart() {
+  const revenueData = [2100, 3400, 2800, 4100, 3700, 5200, 4280];
+  const max = Math.max(...revenueData);
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const chartBars = document.getElementById('chart-bars');
+  if (chartBars) {
+    chartBars.innerHTML = revenueData.map((v, i) => `
+      <div class="chart-bar-wrap">
+        <div style="font-size:10px;color:var(--text2);font-weight:600;">${v.toLocaleString()}</div>
+        <div class="chart-bar" style="height:${Math.round((v / max) * 110)}px;" title="KES ${v.toLocaleString()}">
+          <div class="chart-bar-label">${days[i]}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
 // ===== TOAST =====
-function toast(msg, type='info'){
-  const colors={success:'#22C55E',error:'#EF4444',info:'#3B82F6',warn:'#F97316'};
+function toast(msg, type = 'info') {
+  const colors = { success: '#22C55E', error: '#EF4444', info: '#3B82F6', warn: '#F97316' };
   const container = document.getElementById('admin-toasts');
   const el = document.createElement('div');
-  el.style.cssText=`background:${colors[type]||colors.info};color:white;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.4);pointer-events:all;min-width:220px;animation:slideIn 0.3s ease;`;
-  el.textContent=msg;
+  el.style.cssText = `background:${colors[type] || colors.info};color:white;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.4);pointer-events:all;min-width:220px;animation:slideIn 0.3s ease;`;
+  el.textContent = msg;
   container.appendChild(el);
-  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity 0.3s';setTimeout(()=>el.remove(),300);},3500);
+  setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.3s';
+    setTimeout(() => el.remove(), 300);
+  }, 3500);
 }
 
 // ===== INIT =====
 renderChart();
-setInterval(()=>{
-  const el = document.getElementById('stat-active');
-  if(el) el.textContent = Math.floor(Math.random()*5)+10;
-},30000);
 
-// Auto-login on load
-login();
+// Check if already logged in
+if (authToken) {
+  document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('sidebar').style.display = 'flex';
+  document.getElementById('main').style.display = 'flex';
+  loadDashboardStats();
+  loadActiveUsers();
+  loadPlans();
+}
+
+// Auto-refresh data every 30 seconds
+setInterval(() => {
+  if (authToken) {
+    loadDashboardStats();
+    if (document.getElementById('tab-users').style.display !== 'none') loadActiveUsers();
+    if (document.getElementById('tab-plans').style.display !== 'none') loadPlans();
+  }
+}, 30000);
 </script>
 
 <style>
