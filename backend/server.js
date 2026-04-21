@@ -2,7 +2,26 @@
 // FastConnect Internet — Backend API Server
 // Node.js / Express — Production Ready
 // ============================================================
+// ============================================================
+// MIGRATION RUNNER - Add this at the VERY TOP of server.js
+// ============================================================
+if (process.env.RUN_MIGRATIONS === 'true') {
+  const { execSync } = require('child_process');
+  console.log('🔄 Running database migrations...');
+  try {
+    execSync('node scripts/migrate.js && node scripts/seed.js', { stdio: 'inherit' });
+    console.log('✅ Migrations completed successfully!');
+    process.exit(0);
+  } catch (err) {
+    console.error('❌ Migrations failed:', err.message);
+    process.exit(1);
+  }
+}
 
+// ============================================================
+// FastConnect Internet — Backend API Server
+// (Your existing code continues here...)
+// ============================================================
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
