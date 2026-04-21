@@ -2,7 +2,7 @@ services:
   - type: web
     name: fastconnect-backend
     runtime: node
-    repo: https://github.com/peterjuma23/FastConnectInternet
+    repo: https://github.com/peterjuma23/fastconnectwifihotspot
     plan: free
     region: frankfurt
     buildCommand: cd backend && npm install
@@ -49,3 +49,5 @@ services:
         generateValue: true
       - key: BACKUP_ENCRYPTION_KEY
         generateValue: true
+      - key: HOTSPOT_PROFILE
+        value: fastconnect
