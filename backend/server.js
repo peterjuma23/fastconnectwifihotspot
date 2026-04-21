@@ -117,11 +117,9 @@ async function requireAuth(req, res, next) {
     }
     const token = authHeader.slice(7);
     const payload = verifyAccessToken(token);
-    // Session binding: verify IP + User-Agent
     if (payload.ip !== req.ip || payload.ua !== req.get('User-Agent')) {
       return res.status(401).json({ error: 'Session invalid' });
     }
-    // Check token not revoked in Redis
     const revoked = await redis.get(`revoked:${token}`);
     if (revoked) return res.status(401).json({ error: 'Token revoked' });
     req.user = payload;
@@ -190,7 +188,7 @@ async function auditLog(userId, action, entityType, entityId, oldValues, newValu
 }
 
 // ============================================================
-// MIKROTIK SSH MANAGER (FIXED)
+// MIKROTIK SSH MANAGER
 // ============================================================
 class MikroTikManager {
   constructor() { 
@@ -198,7 +196,6 @@ class MikroTikManager {
   }
 
   async getConnection(router) {
-    // Check if we have a cached connection
     if (this.connections.has(router.id)) {
       const conn = this.connections.get(router.id);
       try {
@@ -264,7 +261,7 @@ class MikroTikManager {
 const mikrotik = new MikroTikManager();
 
 // ============================================================
-// WEBSOCKET SERVER (Plan Updates)
+// WEBSOCKET SERVER
 // ============================================================
 const app = express();
 const server = http.createServer(app);
@@ -287,7 +284,6 @@ wss.on('connection', (ws, req) => {
   ws.on('pong', () => { ws.isAlive = true; });
 });
 
-// Heartbeat to detect dead connections
 setInterval(() => {
   wsClients.forEach(ws => {
     if (!ws.isAlive) {
@@ -306,13 +302,12 @@ function broadcastPlanUpdate(action, planData) {
       client.send(message);
     }
   });
-  // Also publish to Redis for multi-instance support
   redis.publish('plan_updates', message).catch(err => logger.error('Redis publish error', err));
   logger.info(`Plan update broadcast: ${action}`, { planId: planData?.id });
 }
 
 // ============================================================
-// EXPRESS SETUP (FIXED CORS)
+// EXPRESS SETUP
 // ============================================================
 app.set('trust proxy', 1);
 
@@ -339,7 +334,7 @@ app.use(cors({
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:8080',
-      undefined // Allow same-origin requests
+      undefined
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -393,7 +388,7 @@ app.use(globalLimiter);
 // ============================================================
 // PLAN CACHE
 // ============================================================
-const PLAN_CACHE_TTL = 300; // 5 minutes
+const PLAN_CACHE_TTL = 300;
 
 async function getCachedPlans() {
   const cached = await redis.get('plans:active');
@@ -458,30 +453,25 @@ async function initiateStkPush({ phone, amount, planId, idempotencyKey }) {
 }
 
 // ============================================================
-// PROVISION ACCESS (FIXED - decrypts router password)
+// PROVISION ACCESS
 // ============================================================
 async function provisionAccess(payment, overridePhone = null, overrideDeviceId = null) {
   const planSnapshot = JSON.parse(payment.plan_snapshot_json);
   const phone = overridePhone || decrypt(payment.phone_number);
   const deviceId = overrideDeviceId || 'unknown';
   
-  // Get pending data from Redis if available
   const pendingData = await redis.get(`pending:${payment.idempotency_key}`);
   const finalDeviceId = overrideDeviceId || (pendingData ? JSON.parse(pendingData).deviceId : deviceId);
   
-  // Get available router
   const [routers] = await db.execute('SELECT * FROM routers WHERE is_active = 1 ORDER BY RAND() LIMIT 1');
   if (!routers.length) throw new Error('No available routers');
   const router = routers[0];
   
-  // FIX: Decrypt the router password
   router.password_decrypted = decrypt(router.password_encrypted);
   
-  // Generate unique credentials
   const { username, password } = mikrotik.generateCredentials();
   const endTime = new Date(Date.now() + planSnapshot.duration_hours * 3600 * 1000);
   
-  // Create hotspot user on MikroTik
   await mikrotik.createHotspotUser(router, {
     username,
     password,
@@ -490,7 +480,6 @@ async function provisionAccess(payment, overridePhone = null, overrideDeviceId =
     bandwidthMbps: planSnapshot.bandwidth_limit_mbps,
   });
   
-  // Store session
   const [result] = await db.execute(
     `INSERT INTO sessions (phone_number, plan_id, plan_snapshot_json, router_id, device_id,
       hotspot_username, hotspot_password, ip_address, user_agent, start_time, end_time,
@@ -504,8 +493,6 @@ async function provisionAccess(payment, overridePhone = null, overrideDeviceId =
   );
   
   logger.info(`Session provisioned: ${username} for phone ending ...${phone.slice(-4)}`);
-  
-  // Notify via WebSocket
   broadcastPlanUpdate('SESSION_CREATED', { sessionId: result.insertId, username });
   
   return { username, password, endTime, sessionId: result.insertId };
@@ -622,7 +609,6 @@ app.post('/api/payments/initiate', paymentLimiter,
     const idempotencyKey = req.headers['idempotency-key'] || crypto.randomUUID();
 
     try {
-      // Check for duplicate payment
       const [existing] = await db.execute(
         'SELECT id FROM payments WHERE idempotency_key = ?', 
         [idempotencyKey]
@@ -631,7 +617,6 @@ app.post('/api/payments/initiate', paymentLimiter,
         return res.status(409).json({ error: 'Duplicate payment request' });
       }
 
-      // Fetch and validate plan
       const [plans] = await db.execute(
         'SELECT * FROM pricing_plans WHERE id = ? AND is_active = 1 AND deleted_at IS NULL', 
         [planId]
@@ -641,7 +626,6 @@ app.post('/api/payments/initiate', paymentLimiter,
       }
       const plan = plans[0];
 
-      // Store payment record
       const planSnapshot = JSON.stringify({
         id: plan.id, 
         name: plan.name, 
@@ -657,10 +641,8 @@ app.post('/api/payments/initiate', paymentLimiter,
         [idempotencyKey, encrypt(phone), planId, planSnapshot, plan.price_kes]
       );
 
-      // Store device-session mapping in Redis for quick lookup
       await redis.setEx(`pending:${idempotencyKey}`, 600, JSON.stringify({ phone, planId, deviceId }));
 
-      // Initiate STK Push
       const stkResponse = await initiateStkPush({
         phone, amount: plan.price_kes, planId, idempotencyKey
       });
@@ -703,10 +685,9 @@ app.get('/api/payments/status/:id', async (req, res) => {
 });
 
 // ============================================================
-// M-PESA CALLBACK (Webhook)
+// M-PESA CALLBACK
 // ============================================================
 app.post('/api/payments/mpesa-callback', async (req, res) => {
-  // Acknowledge immediately (Safaricom requirement)
   res.json({ ResultCode: 0, ResultDesc: 'Accepted' });
 
   try {
@@ -734,7 +715,6 @@ app.post('/api/payments/mpesa-callback', async (req, res) => {
       return;
     }
 
-    // Extract M-Pesa receipt
     const items = CallbackMetadata?.Item || [];
     const getItem = name => items.find(i => i.Name === name)?.Value;
     const receipt = getItem('MpesaReceiptNumber');
@@ -748,7 +728,6 @@ app.post('/api/payments/mpesa-callback', async (req, res) => {
       [receipt, JSON.stringify(callbackData), CheckoutRequestID]
     );
 
-    // Provision WiFi access
     await provisionAccess(payment);
 
   } catch (err) {
@@ -781,16 +760,13 @@ app.post('/api/vouchers/redeem',
       }
       const voucher = vouchers[0];
 
-      // Handle gracefully if plan was deleted/edited
       let planSnapshot = JSON.parse(voucher.plan_snapshot_json);
 
-      // Mark voucher as used
       await db.execute(
         'UPDATE vouchers SET is_used = 1, used_by_phone = ?, used_at = NOW() WHERE id = ?',
         [encrypt(phone), voucher.id]
       );
 
-      // Create a fake payment record for provisioning
       const fakePayment = {
         plan_id: voucher.plan_id,
         plan_snapshot_json: voucher.plan_snapshot_json,
@@ -815,13 +791,13 @@ app.post('/api/vouchers/redeem',
 );
 
 // ============================================================
-// ROUTES — ADMIN AUTH
+// ROUTES — ADMIN AUTH (FIXED)
 // ============================================================
 app.post('/api/admin/auth/login', loginLimiter,
   [
     body('username').isString().trim().notEmpty(),
     body('password').isString().notEmpty(),
-    body('totpCode').optional().isString().length({ min: 6, max: 6 }),
+    body('totpCode').optional().isString().isLength({ min: 6, max: 6 }),  // ✅ FIXED
   ],
   handleValidationErrors,
   async (req, res) => {
@@ -842,7 +818,6 @@ app.post('/api/admin/auth/login', loginLimiter,
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
-      // TOTP check
       if (user.mfa_enabled) {
         if (!totpCode) {
           return res.status(200).json({ mfaRequired: true });
@@ -868,7 +843,6 @@ app.post('/api/admin/auth/login', loginLimiter,
       const accessToken = signAccessToken(payload);
       const refreshToken = signRefreshToken({ id: user.id });
 
-      // Update last login
       await db.execute('UPDATE users SET last_login_ip = ?, last_login_at = NOW() WHERE id = ?', [req.ip, user.id]);
       await auditLog(user.id, 'LOGIN', 'user', user.id, null, { ip: req.ip }, req);
 
@@ -1060,7 +1034,6 @@ app.put('/api/admin/plans/:id', requireAdmin, adminLimiter,
       }
       const oldPlan = existing[0];
 
-      // Save to history
       await db.execute(
         `INSERT INTO plan_history (plan_id, name, duration_hours, price_kes, bandwidth_limit_mbps, features_json, changed_by, changed_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
@@ -1084,7 +1057,6 @@ app.put('/api/admin/plans/:id', requireAdmin, adminLimiter,
       broadcastPlanUpdate('PLAN_UPDATED', updatedPlan[0]);
       await auditLog(req.user.id, 'PLAN_UPDATE', 'plan', req.params.id, oldPlan, updatedPlan[0], req);
 
-      // Active sessions keep original terms (no action needed — plan_snapshot_json is immutable per session)
       const [activeSessions] = await db.execute(
         "SELECT COUNT(*) as count FROM sessions WHERE plan_id = ? AND status = 'active'", 
         [req.params.id]
@@ -1241,7 +1213,6 @@ app.post('/api/admin/enable-2fa', requireAdmin, async (req, res) => {
 // ============================================================
 // CRON JOBS
 // ============================================================
-// Clean expired sessions (hourly)
 cron.schedule('0 * * * *', async () => {
   try {
     const [expired] = await db.execute("SELECT * FROM sessions WHERE status = 'active' AND end_time < NOW()");
@@ -1264,7 +1235,6 @@ cron.schedule('0 * * * *', async () => {
   }
 });
 
-// Router health checks (every 5 minutes)
 cron.schedule('*/5 * * * *', async () => {
   try {
     const [routers] = await db.execute('SELECT * FROM routers WHERE is_active = 1');
@@ -1281,7 +1251,6 @@ cron.schedule('*/5 * * * *', async () => {
   }
 });
 
-// Daily backup (2 AM)
 cron.schedule('0 2 * * *', async () => {
   try {
     const timestamp = new Date().toISOString().slice(0, 10);
@@ -1289,7 +1258,6 @@ cron.schedule('0 2 * * *', async () => {
     const { execSync } = require('child_process');
     execSync(`mysqldump -u ${process.env.DB_USER} -p${process.env.DB_PASSWORD} ${process.env.DB_NAME} > ${backupFile}`);
     
-    // Encrypt backup
     const input = fs.readFileSync(backupFile);
     const iv = crypto.randomBytes(16);
     const key = Buffer.from(process.env.BACKUP_ENCRYPTION_KEY, 'hex');
@@ -1304,12 +1272,10 @@ cron.schedule('0 2 * * *', async () => {
   }
 });
 
-// Clean old audit logs (weekly, keep 6 months)
 cron.schedule('0 3 * * 0', async () => {
   await db.execute("DELETE FROM audit_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 6 MONTH)");
 });
 
-// Archive plan history older than 1 year (monthly)
 cron.schedule('0 4 1 * *', async () => {
   await db.execute("DELETE FROM plan_history WHERE changed_at < DATE_SUB(NOW(), INTERVAL 1 YEAR)");
 });
@@ -1340,7 +1306,6 @@ server.listen(PORT, () => {
   logger.info(`WebSocket server ready on /ws/plans`);
 });
 
-// Graceful shutdown
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully...');
   server.close(async () => {
