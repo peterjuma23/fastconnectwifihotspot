@@ -2,26 +2,7 @@
 // FastConnect Internet — Backend API Server
 // Node.js / Express — Production Ready
 // ============================================================
-// ============================================================
-// MIGRATION RUNNER - Add this at the VERY TOP of server.js
-// ============================================================
-if (process.env.RUN_MIGRATIONS === 'true') {
-  const { execSync } = require('child_process');
-  console.log('🔄 Running database migrations...');
-  try {
-    execSync('node scripts/migrate.js && node scripts/seed.js', { stdio: 'inherit' });
-    console.log('✅ Migrations completed successfully!');
-    process.exit(0);
-  } catch (err) {
-    console.error('❌ Migrations failed:', err.message);
-    process.exit(1);
-  }
-}
 
-// ============================================================
-// FastConnect Internet — Backend API Server
-// (Your existing code continues here...)
-// ============================================================
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
@@ -345,25 +326,35 @@ app.use(helmet({
   hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
 }));
 
+// ============================================================
+// CORS CONFIGURATION (FIXED FOR RENDER DEPLOYMENT)
+// ============================================================
+const allowedOrigins = [
+  'https://fastconnectwifihotspot.onrender.com',
+  'https://fastconnect-backend.onrender.com',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:8080'
+];
+
 app.use(cors({
   origin: function(origin, callback) {
-    const allowedOrigins = [
-      process.env.FRONTEND_URL || 'https://wifi.fastconnect.co.ke',
-      'https://admin.fastconnect.co.ke',
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:8080',
-      undefined
-    ];
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.warn(`CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Device-Id', 'Idempotency-Key']
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -810,13 +801,13 @@ app.post('/api/vouchers/redeem',
 );
 
 // ============================================================
-// ROUTES — ADMIN AUTH (FIXED)
+// ROUTES — ADMIN AUTH
 // ============================================================
 app.post('/api/admin/auth/login', loginLimiter,
   [
     body('username').isString().trim().notEmpty(),
     body('password').isString().notEmpty(),
-    body('totpCode').optional().isString().isLength({ min: 6, max: 6 }),  // ✅ FIXED
+    body('totpCode').optional().isString().isLength({ min: 6, max: 6 }),
   ],
   handleValidationErrors,
   async (req, res) => {
