@@ -1,0 +1,9 @@
+{
+  "name": "fastconnect-wifi",
+  "version": "1.0.0",
+  "description": "FastConnect Internet WiFi Billing System",
+  "scripts": {
+    "dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "prod": "docker-compose up -d"
+  }
+}
