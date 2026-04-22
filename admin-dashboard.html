@@ -477,7 +477,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 
 <script>
 // ===== CONFIGURATION =====
-// UPDATED: Use the correct backend URL from Render
+// IMPORTANT: Use the correct backend URL
 const API_BASE = 'https://fastconnect-backend-294o.onrender.com';
 let authToken = localStorage.getItem('admin_token');
 let currentPlans = [];
@@ -521,7 +521,7 @@ async function attemptLogin() {
     }
   } catch (err) {
     console.error('Login error:', err);
-    errorEl.textContent = 'Connection error. Make sure backend is running.';
+    errorEl.textContent = 'Connection error. Please try again.';
     errorEl.style.display = 'block';
   }
 }
