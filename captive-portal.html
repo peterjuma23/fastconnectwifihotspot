@@ -7,131 +7,78 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
-  :root{
-    --green:#16A34A;--green-light:#DCFCE7;--green-dark:#14532D;
-    --blue:#2563EB;--blue-light:#DBEAFE;--blue-dark:#1E3A8A;
-    --orange:#EA580C;--orange-light:#FED7AA;
-    --red:#DC2626;--red-light:#FEE2E2;
-    --yellow:#CA8A04;--yellow-light:#FEF9C3;--yellow-bg:#FEFCE8;
-    --gray:#64748B;--gray-light:#F1F5F9;--gray-border:#E2E8F0;
-    --text:#0F172A;--text-muted:#64748B;--text-light:#94A3B8;
-    --white:#FFFFFF;--bg:#F8FAFC;
-    --radius:16px;--radius-sm:10px;
-    --shadow:0 4px 24px rgba(0,0,0,0.12);--shadow-sm:0 2px 8px rgba(0,0,0,0.08);
-    --font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
-  }
-  body{font-family:var(--font);background:#F8FAFC;color:var(--text);min-height:100vh;max-width:420px;margin:0 auto;position:relative;overflow-x:hidden;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:#F8FAFC;color:#0F172A;max-width:420px;margin:0 auto;}
 
-  .header{padding:28px 20px 24px;position:relative;overflow:hidden;background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 100%);}
-  .header::before{content:'';position:absolute;inset:0;opacity:0.12;background:repeating-linear-gradient(45deg,rgba(255,255,255,0.3) 0,rgba(255,255,255,0.3) 1px,transparent 0,transparent 50%);background-size:10px 10px;}
-  .header-inner{position:relative;z-index:1;}
+  .header{background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 100%);padding:28px 20px 24px;color:white;}
   .logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
   .logo-icon{width:36px;height:36px;background:rgba(255,255,255,0.25);border-radius:10px;display:flex;align-items:center;justify-content:center;}
-  .logo-icon svg{width:20px;height:20px;fill:white;}
-  .logo-text{font-size:17px;font-weight:800;color:white;letter-spacing:-0.3px;}
-  .header-title{font-size:26px;font-weight:800;color:white;line-height:1.2;letter-spacing:-0.5px;}
-  .header-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px;font-weight:500;}
+  .logo-text{font-size:17px;font-weight:800;}
+  .header-title{font-size:26px;font-weight:800;margin-top:8px;}
+  .header-sub{font-size:13px;opacity:0.75;margin-top:4px;}
 
   .content{padding:20px;}
-  .section-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;}
+  .section-title{font-size:12px;font-weight:700;text-transform:uppercase;color:#64748B;margin-bottom:14px;}
 
   .plans-grid{display:flex;flex-direction:column;gap:12px;}
-  .plan-card{background:var(--white);border:1.5px solid var(--gray-border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
-  .plan-card:hover{border-color:#93C5FD;box-shadow:var(--shadow-sm);}
-  .plan-card.popular{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,0.08);}
-  .popular-badge{position:absolute;top:0;right:0;background:var(--blue);color:white;font-size:10px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;padding:4px 12px;border-radius:0 var(--radius) 0 var(--radius-sm);}
-  .plan-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-  .plan-name{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-0.3px;}
-  .plan-price{text-align:right;}
-  .plan-price-num{font-size:24px;font-weight:800;color:var(--blue);letter-spacing:-0.5px;}
-  .plan-price-sub{font-size:11px;color:var(--text-muted);font-weight:500;}
+  .plan-card{background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:18px;position:relative;}
+  .plan-card.popular{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,0.08);}
+  .popular-badge{position:absolute;top:0;right:0;background:#2563EB;color:white;font-size:10px;font-weight:800;padding:4px 12px;border-radius:0 16px 0 10px;}
+  .plan-top{display:flex;justify-content:space-between;margin-bottom:10px;}
+  .plan-name{font-size:18px;font-weight:800;}
+  .plan-price-num{font-size:24px;font-weight:800;color:#2563EB;}
+  .plan-price-sub{font-size:11px;color:#64748B;}
   .plan-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
-  .plan-feat{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--text-muted);}
-  .plan-feat svg{width:13px;height:13px;fill:var(--green);}
-  .pay-btn{width:100%;background:var(--blue);color:white;border:none;border-radius:10px;padding:13px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;letter-spacing:-0.2px;}
+  .plan-feat{display:flex;align-items:center;gap:4px;font-size:12px;color:#64748B;}
+  .plan-feat svg{width:13px;height:13px;fill:#16A34A;}
+  .pay-btn{width:100%;background:#2563EB;color:white;border:none;border-radius:10px;padding:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
   .pay-btn:hover{background:#1D4ED8;}
-  .pay-btn:active{transform:scale(0.98);}
-  .mpesa-logo{background:rgba(255,255,255,0.2);border-radius:5px;padding:2px 6px;font-size:11px;font-weight:800;color:white;letter-spacing:0.5px;}
 
-  .voucher-link{display:block;text-align:center;margin-top:20px;padding:14px;border:1.5px dashed var(--gray-border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;transition:all 0.2s;}
-  .voucher-link:hover{background:var(--blue-light);border-color:var(--blue);}
+  .voucher-link{display:block;text-align:center;margin-top:20px;padding:14px;border:1.5px dashed #E2E8F0;border-radius:10px;color:#2563EB;cursor:pointer;}
 
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s;}
   .overlay.active{opacity:1;pointer-events:all;}
-  .modal{background:white;border-radius:24px 24px 0 0;padding:28px 20px 40px;width:100%;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);}
+  .modal{background:white;border-radius:24px 24px 0 0;padding:28px 20px 40px;width:100%;transform:translateY(100%);transition:transform 0.3s;}
   .overlay.active .modal{transform:translateY(0);}
-  .modal-handle{width:40px;height:4px;background:var(--gray-border);border-radius:100px;margin:0 auto 20px;}
-  .modal-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-0.3px;}
-  .modal-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px;font-weight:500;}
-  .modal-amount{background:var(--blue-light);border-radius:var(--radius-sm);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-  .modal-amount-label{font-size:13px;color:var(--blue-dark);font-weight:600;}
-  .modal-amount-val{font-size:22px;font-weight:800;color:var(--blue);}
-  .input-group{margin-bottom:16px;}
-  .input-label{font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;display:block;}
+  .modal-close{position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:50%;background:#F1F5F9;border:none;cursor:pointer;font-size:18px;}
+  .modal-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+  .modal-sub{font-size:13px;color:#64748B;margin-bottom:24px;}
+  .modal-amount{background:#DBEAFE;border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;margin-bottom:20px;}
+  .modal-amount-val{font-size:22px;font-weight:800;color:#2563EB;}
   .phone-wrap{display:flex;gap:8px;}
-  .phone-prefix{background:var(--gray-light);border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);padding:0 14px;font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;white-space:nowrap;}
-  input[type=text],input[type=tel]{width:100%;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);padding:13px 16px;font-family:var(--font);font-size:15px;font-weight:600;color:var(--text);outline:none;transition:border-color 0.15s;}
-  input[type=text]:focus,input[type=tel]:focus{border-color:var(--blue);}
-  .input-hint{font-size:11px;color:var(--text-light);margin-top:6px;font-weight:500;}
-  .submit-btn{width:100%;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);padding:15px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
-  .submit-btn:hover{background:#15803D;}
-  .submit-btn:disabled{background:var(--gray-border);color:var(--text-light);cursor:not-allowed;}
-  .modal-close{position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:50%;background:var(--gray-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text-muted);}
-
-  .spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,0.35);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-
-  .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:90%;max-width:360px;}
-  .toast{background:var(--text);color:white;padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);animation:toastIn 0.3s ease;opacity:1;transition:opacity 0.3s;}
-  .toast.success{background:var(--green);}
-  .toast.error{background:var(--red);}
-  .toast.info{background:var(--blue);}
-  .toast.fade-out{opacity:0;}
+  .phone-prefix{background:#F1F5F9;border:1.5px solid #E2E8F0;border-radius:10px;padding:0 14px;display:flex;align-items:center;}
+  input{flex:1;border:1.5px solid #E2E8F0;border-radius:10px;padding:13px 16px;outline:none;}
+  input:focus{border-color:#2563EB;}
+  .submit-btn{width:100%;background:#16A34A;color:white;border:none;border-radius:10px;padding:15px;font-weight:700;cursor:pointer;margin-top:16px;}
+  .submit-btn:disabled{background:#E2E8F0;cursor:not-allowed;}
+  .input-hint{font-size:11px;color:#94A3B8;margin-top:6px;}
+  .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:999;width:90%;max-width:360px;}
+  .toast{background:#0F172A;color:white;padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:8px;animation:toastIn 0.3s;}
+  .toast.success{background:#16A34A;}
+  .toast.error{background:#DC2626;}
   @keyframes toastIn{from{transform:translateY(-10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-
-  .payment-status{background:var(--white);border:1.5px solid var(--gray-border);border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:16px;}
-  .payment-status-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;}
-  .payment-status-icon.pending{background:#FEF3C7;animation:pulseBg 1.5s infinite;}
-  .payment-status-icon.success{background:var(--green-light);}
-  .payment-status-icon.error{background:var(--red-light);}
-  @keyframes pulseBg{0%,100%{opacity:1;}50%{opacity:0.6;}}
-  .payment-status-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;}
-  .payment-status-sub{font-size:13px;color:var(--text-muted);line-height:1.5;}
-
-  .plan-skeleton{height:130px;background:linear-gradient(90deg,#F1F5F9 25%,#E2E8F0 50%,#F1F5F9 75%);background-size:200% 100%;border-radius:var(--radius);animation:shimmer 1.4s infinite;}
-  @keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+  .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
 
 <div class="toast-container" id="toasts"></div>
 
-<!-- MAIN CONTENT - ONLY PLANS PAGE -->
-<div id="app">
-  <div class="header">
-    <div class="header-inner">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24"><path d="M1.293 8.395A14.9 14.9 0 0112 4c3.9 0 7.45 1.49 10.107 3.93l1.307-1.46A17 17 0 0012 2 16.9 16.9 0 00.001 6.876zM12 10a7 7 0 00-4.95 2.05L8.465 13.5A5 5 0 0112 12a5 5 0 013.535 1.5l1.414-1.45A7 7 0 0012 10zm0 4a3 3 0 00-2.121.879L12 17l2.121-2.121A3 3 0 0012 14z"/></svg>
-        </div>
-        <span class="logo-text">FastConnect Internet</span>
-      </div>
-      <div class="header-title">Get Connected</div>
-      <div class="header-sub">Choose a plan and pay with M-Pesa</div>
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M1.293 8.395A14.9 14.9 0 0112 4c3.9 0 7.45 1.49 10.107 3.93l1.307-1.46A17 17 0 0012 2 16.9 16.9 0 00.001 6.876zM12 10a7 7 0 00-4.95 2.05L8.465 13.5A5 5 0 0112 12a5 5 0 013.535 1.5l1.414-1.45A7 7 0 0012 10zm0 4a3 3 0 00-2.121.879L12 17l2.121-2.121A3 3 0 0012 14z"/></svg>
     </div>
+    <span class="logo-text">FastConnect Internet</span>
   </div>
+  <div class="header-title">Get Connected</div>
+  <div class="header-sub">Choose a plan and pay with M-Pesa</div>
+</div>
 
-  <div class="content">
-    <div class="section-title">Available Plans</div>
-    <div class="plans-grid" id="plans-grid">
-      <div class="plan-skeleton"></div>
-      <div class="plan-skeleton"></div>
-      <div class="plan-skeleton"></div>
-    </div>
-    <div class="voucher-link" onclick="openVoucherModal()">
-      🎟 Have a voucher? Redeem it here
-    </div>
-  </div>
+<div class="content">
+  <div class="section-title">Available Plans</div>
+  <div class="plans-grid" id="plans-grid"></div>
+  <div class="voucher-link" onclick="openVoucherModal()">🎟 Have a voucher? Redeem it here</div>
 </div>
 
 <!-- MPESA MODAL -->
@@ -169,40 +116,26 @@
     <div class="modal-sub">Enter your voucher code to get connected</div>
     <div class="input-group">
       <label class="input-label">Voucher Code</label>
-      <input type="text" id="voucher-input" placeholder="FC-XXXX-XXXX" maxlength="12" style="text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);" oninput="formatVoucher(this)">
+      <input type="text" id="voucher-input" placeholder="FC-XXXX-XXXX" maxlength="12" style="text-transform:uppercase;letter-spacing:1px;" oninput="formatVoucher(this)">
       <div class="input-hint">Try demo voucher: FC-DEMO-2024</div>
     </div>
-    <div id="voucher-error" style="display:none;background:var(--red-light);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--red);font-weight:600;"></div>
-    <button class="submit-btn" onclick="redeemVoucher()" style="background:var(--blue);">
-      <span>Redeem Voucher</span>
-    </button>
+    <div id="voucher-error" style="display:none;background:#FEE2E2;border-radius:10px;padding:10px;margin-bottom:16px;font-size:13px;color:#DC2626;"></div>
+    <button class="submit-btn" onclick="redeemVoucher()" style="background:#2563EB;">Redeem Voucher</button>
   </div>
 </div>
 
 <script>
-// ===== API CONFIGURATION =====
-const API_BASE = 'https://fastconnect-backend-294o.onrender.com';
-const WS_URL = 'wss://fastconnect-backend-294o.onrender.com/ws/plans';
+// ===== HARDCODED PLANS (no API call needed) =====
+const plans = [
+  {id:1, name:'2 Hours', duration_hours:2, price_kes:10, bandwidth_limit_mbps:2, is_popular:false},
+  {id:2, name:'4 Hours', duration_hours:4, price_kes:15, bandwidth_limit_mbps:2, is_popular:false},
+  {id:3, name:'8 Hours', duration_hours:8, price_kes:25, bandwidth_limit_mbps:2, is_popular:false},
+  {id:4, name:'24 Hours', duration_hours:24, price_kes:40, bandwidth_limit_mbps:2, is_popular:true},
+  {id:5, name:'Weekly', duration_hours:168, price_kes:200, bandwidth_limit_mbps:2, is_popular:false},
+  {id:6, name:'Monthly', duration_hours:720, price_kes:600, bandwidth_limit_mbps:2, is_popular:false}
+];
 
-// ===== DATA =====
-let plans = [];
 let selectedPlan = null;
-let ws = null;
-
-// ===== FETCH PLANS =====
-async function fetchPlans() {
-  try {
-    const response = await fetch(`${API_BASE}/api/plans`);
-    const data = await response.json();
-    if (data.plans && data.plans.length > 0) {
-      plans = data.plans;
-      renderPlans();
-    }
-  } catch (err) {
-    console.error('Failed to fetch plans', err);
-    toast('Could not load plans. Please refresh.', 'error');
-  }
-}
 
 // ===== RENDER PLANS =====
 function renderPlans() {
@@ -213,7 +146,7 @@ function renderPlans() {
     <div class="plan-card${p.is_popular ? ' popular' : ''}">
       ${p.is_popular ? '<div class="popular-badge">⭐ Popular</div>' : ''}
       <div class="plan-top">
-        <div class="plan-name">${escapeHtml(p.name)}</div>
+        <div class="plan-name">${p.name}</div>
         <div class="plan-price">
           <div class="plan-price-num">KES ${p.price_kes}</div>
           <div class="plan-price-sub">one-time</div>
@@ -229,44 +162,6 @@ function renderPlans() {
       </button>
     </div>
   `).join('');
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// ===== WEBSOCKET FOR REAL-TIME UPDATES =====
-function connectWebSocket() {
-  if (ws && ws.readyState === WebSocket.OPEN) return;
-  
-  ws = new WebSocket(WS_URL);
-  
-  ws.onopen = () => {
-    console.log('WebSocket connected');
-  };
-  
-  ws.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (data.action === 'PLAN_UPDATED' || data.action === 'PLAN_CREATED' || data.action === 'PLAN_DELETED') {
-        fetchPlans();
-        toast('Plans have been updated', 'info');
-      }
-    } catch (err) {
-      console.error('WebSocket message error', err);
-    }
-  };
-  
-  ws.onclose = () => {
-    console.log('WebSocket disconnected, reconnecting in 5s...');
-    setTimeout(connectWebSocket, 5000);
-  };
-  
-  ws.onerror = (err) => {
-    console.error('WebSocket error', err);
-  };
 }
 
 // ===== PAYMENT MODAL =====
@@ -289,8 +184,7 @@ function validatePhone() {
 
 async function initiatePayment() {
   const phone = document.getElementById('phone-input').value;
-  const deviceId = localStorage.getItem('fc_device_id') || 
-    `${Date.now()}-${Math.random().toString(36).slice(2)}-${navigator.userAgent.length}`;
+  const deviceId = localStorage.getItem('fc_device_id') || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   localStorage.setItem('fc_device_id', deviceId);
   
   const btn = document.getElementById('mpesa-submit');
@@ -303,7 +197,7 @@ async function initiatePayment() {
   
   try {
     const idempotencyKey = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
-    const response = await fetch(`${API_BASE}/api/payments/initiate`, {
+    const response = await fetch('https://fastconnect-backend-294o.onrender.com/api/payments/initiate', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -322,25 +216,21 @@ async function initiatePayment() {
       closeModal('mpesa-modal');
       toast('STK Push sent! Check your phone', 'info');
       
-      // Poll for payment status
       let attempts = 0;
       const pollInterval = setInterval(async () => {
         attempts++;
         try {
-          const statusRes = await fetch(`${API_BASE}/api/payments/status/${data.checkoutRequestId}`);
+          const statusRes = await fetch(`https://fastconnect-backend-294o.onrender.com/api/payments/status/${data.checkoutRequestId}`);
           const status = await statusRes.json();
           
           if (status.status === 'completed') {
             clearInterval(pollInterval);
             toast('Payment successful! You will receive WiFi credentials via SMS.', 'success');
-            document.getElementById('phone-input').value = '';
           } else if (status.status === 'failed') {
             clearInterval(pollInterval);
             toast('Payment failed. Please try again.', 'error');
           }
-        } catch (err) {
-          console.error('Poll error', err);
-        }
+        } catch (err) {}
         
         if (attempts >= 30) {
           clearInterval(pollInterval);
@@ -375,8 +265,7 @@ function formatVoucher(el) {
 async function redeemVoucher() {
   const code = document.getElementById('voucher-input').value;
   const phone = '0712345678';
-  const deviceId = localStorage.getItem('fc_device_id') || 
-    `${Date.now()}-${Math.random().toString(36).slice(2)}-${navigator.userAgent.length}`;
+  const deviceId = localStorage.getItem('fc_device_id') || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const errEl = document.getElementById('voucher-error');
   
   if (!code) {
@@ -388,13 +277,12 @@ async function redeemVoucher() {
   if (code === 'FC-DEMO-2024') {
     closeModal('voucher-modal');
     toast('Voucher redeemed! 24 hours free access', 'success');
-    toast('WiFi credentials will be sent to your phone.', 'info');
     document.getElementById('voucher-input').value = '';
     return;
   }
   
   try {
-    const response = await fetch(`${API_BASE}/api/vouchers/redeem`, {
+    const response = await fetch('https://fastconnect-backend-294o.onrender.com/api/vouchers/redeem', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ voucherCode: code, phone: phone, deviceId: deviceId })
@@ -418,7 +306,6 @@ async function redeemVoucher() {
   }
 }
 
-// ===== MODAL HELPERS =====
 function openModal(id) {
   document.getElementById(id).classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -429,12 +316,11 @@ function closeModal(id) {
   document.body.style.overflow = '';
 }
 
-// ===== TOAST =====
 function toast(msg, type = 'info') {
   const container = document.getElementById('toasts');
   const el = document.createElement('div');
   el.className = `toast ${type}`;
-  el.innerHTML = `<span style="font-size:14px;">${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>${msg}`;
+  el.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>${msg}`;
   container.appendChild(el);
   setTimeout(() => {
     el.classList.add('fade-out');
@@ -442,16 +328,12 @@ function toast(msg, type = 'info') {
   }, 3000);
 }
 
-// ===== INIT =====
 document.querySelectorAll('.overlay').forEach(o => {
   o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
 });
 
-fetchPlans();
-connectWebSocket();
-
-// Poll for plan updates every 30 seconds (fallback)
-setInterval(fetchPlans, 30000);
+// Load plans immediately
+renderPlans();
 </script>
 </body>
 </html>
