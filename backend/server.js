@@ -53,7 +53,7 @@ const db = mysql.createPool({
   database: process.env.DB_NAME || 'fastconnect_db',
   port: parseInt(process.env.DB_PORT) || 3306,
   ssl: {
-    rejectUnauthorized: false  // Accept self-signed certificates from Aiven
+    rejectUnauthorized: false
   },
   waitForConnections: true,
   connectionLimit: 10,
@@ -343,32 +343,16 @@ app.use(helmet({
 }));
 
 // ============================================================
-// CORS CONFIGURATION
+// CORS CONFIGURATION - FIXED (Allow all origins for testing)
 // ============================================================
-const allowedOrigins = [
-  'https://fastconnectwifihotspot.onrender.com',
-  'https://fastconnect-backend-294o.onrender.com',
-  'https://fastconnect-backend.onrender.com',
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://localhost:8080'
-];
-
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.warn(`CORS blocked origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: '*',  // Allow all origins - TEMPORARY for captive portal
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Device-Id', 'Idempotency-Key']
 }));
 
+// Handle preflight requests
 app.options('*', cors());
 
 app.use(express.json({ limit: '10kb' }));
