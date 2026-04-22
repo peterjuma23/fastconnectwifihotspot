@@ -56,11 +56,23 @@ const db = mysql.createPool({
     rejectUnauthorized: false  // Accept self-signed certificates from Aiven
   },
   waitForConnections: true,
-  connectionLimit: 20,
+  connectionLimit: 10,
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 30000,
 });
+
+// Test database connection on startup
+(async function testDbConnection() {
+  try {
+    const conn = await db.getConnection();
+    console.log('✅ Database connected successfully to Aiven MySQL');
+    conn.release();
+  } catch (err) {
+    console.error('❌ Database connection failed:', err.message);
+    console.error('Please check your DB_HOST, DB_USER, DB_PASSWORD environment variables');
+  }
+})();
 
 // ============================================================
 // REDIS CLIENT
@@ -364,6 +376,28 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(morgan('combined', { stream: { write: msg => logger.info(msg.trim()) } }));
 
 // ============================================================
+// DATABASE TEST ENDPOINT
+// ============================================================
+app.get('/api/db-test', async (req, res) => {
+  try {
+    const [result] = await db.query('SELECT 1 as connected, NOW() as time, DATABASE() as database_name');
+    res.json({ 
+      success: true, 
+      connected: true,
+      database: result[0].database_name,
+      time: result[0].time,
+      message: 'Database connection successful'
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      success: false, 
+      error: err.message,
+      code: err.code
+    });
+  }
+});
+
+// ============================================================
 // TEMPORARY MIGRATION ENDPOINT - Remove after migrations complete
 // ============================================================
 app.get('/api/run-migrations', async (req, res) => {
@@ -611,7 +645,7 @@ async function provisionAccess(payment, overridePhone = null, overrideDeviceId =
 // ============================================================
 app.get('/health', async (req, res) => {
   try {
-    await db.execute('SELECT 1');
+    await db.query('SELECT 1');
     await redis.ping();
     res.json({ 
       status: 'ok', 
@@ -632,7 +666,7 @@ app.get('/api/plans', async (req, res) => {
     res.json({ plans });
   } catch (err) {
     logger.error('GET /api/plans error', err);
-    res.status(500).json({ error: 'Service unavailable' });
+    res.status(500).json({ error: 'Service unavailable', details: err.message });
   }
 });
 
