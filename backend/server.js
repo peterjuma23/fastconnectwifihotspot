@@ -398,96 +398,184 @@ app.get('/api/db-test', async (req, res) => {
 });
 
 // ============================================================
-// TEMPORARY MIGRATION ENDPOINT - Remove after migrations complete
+// CREATE TABLES ENDPOINT - Use this to create tables
 // ============================================================
-app.get('/api/run-migrations', async (req, res) => {
+app.get('/api/create-tables', async (req, res) => {
   const authKey = req.query.key;
   if (authKey !== 'FASTCONNECT_MIGRATE_2024') {
-    return res.status(401).json({ error: 'Invalid migration key' });
+    return res.status(401).json({ error: 'Invalid key' });
   }
   
   try {
-    console.log('🔄 Running migrations...');
-    console.log('Current directory:', __dirname);
+    console.log('Creating tables...');
     
-    // Try multiple possible locations for schema.sql
-    const possiblePaths = [
-      path.join(__dirname, 'schema.sql'),
-      path.join(__dirname, '../schema.sql'),
-      path.join(process.cwd(), 'schema.sql'),
-      path.join(process.cwd(), 'backend/schema.sql'),
-      '/opt/render/project/src/backend/schema.sql',
-      '/opt/render/project/src/schema.sql'
-    ];
+    // Create pricing_plans table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS pricing_plans (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        duration_hours DECIMAL(10,2) NOT NULL,
+        price_kes DECIMAL(10,2) NOT NULL,
+        bandwidth_limit_mbps DECIMAL(5,2) DEFAULT 2.00,
+        features_json JSON,
+        is_active TINYINT(1) DEFAULT 1,
+        is_popular TINYINT(1) DEFAULT 0,
+        display_order INT DEFAULT 0,
+        created_by INT,
+        updated_by INT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        deleted_at DATETIME
+      )
+    `);
+    console.log('✅ pricing_plans table created');
     
-    let schemaPath = null;
-    for (const p of possiblePaths) {
-      if (fs.existsSync(p)) {
-        schemaPath = p;
-        console.log('Found schema.sql at:', p);
-        break;
-      }
-    }
+    // Create users table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) NOT NULL UNIQUE,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password_hash VARCHAR(255) NOT NULL,
+        role VARCHAR(20) DEFAULT 'staff',
+        mfa_secret TEXT,
+        mfa_enabled TINYINT(1) DEFAULT 0,
+        last_login_ip VARCHAR(45),
+        last_login_at DATETIME,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        deleted_at DATETIME
+      )
+    `);
+    console.log('✅ users table created');
     
-    if (!schemaPath) {
-      const files = fs.readdirSync(__dirname);
-      console.log('Files in directory:', files);
-      return res.status(500).json({ error: 'schema.sql not found', files: files });
-    }
+    // Create sessions table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS sessions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        phone_number TEXT,
+        plan_id INT,
+        plan_snapshot_json JSON,
+        router_id INT,
+        device_id TEXT,
+        hotspot_username VARCHAR(100),
+        hotspot_password TEXT,
+        ip_address VARCHAR(45),
+        user_agent VARCHAR(500),
+        start_time DATETIME,
+        end_time DATETIME,
+        data_used_mb DECIMAL(12,2) DEFAULT 0,
+        status VARCHAR(20) DEFAULT 'active',
+        original_bandwidth_limit DECIMAL(5,2),
+        last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ sessions table created');
     
-    const schema = fs.readFileSync(schemaPath, 'utf8');
+    // Create payments table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS payments (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        idempotency_key VARCHAR(255) UNIQUE,
+        phone_number TEXT,
+        plan_id INT,
+        plan_snapshot_json JSON,
+        amount_kes DECIMAL(10,2),
+        mpesa_receipt_number VARCHAR(100),
+        transaction_id VARCHAR(255),
+        checkout_request_id VARCHAR(255),
+        status VARCHAR(20) DEFAULT 'pending',
+        result_code INT,
+        result_desc VARCHAR(500),
+        callback_data JSON,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        completed_at DATETIME
+      )
+    `);
+    console.log('✅ payments table created');
     
-    // Split by semicolon and execute each statement
-    const statements = schema.split(';').filter(s => s.trim().length > 0);
-    let executed = 0;
+    // Create vouchers table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS vouchers (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        voucher_code VARCHAR(20) UNIQUE,
+        plan_id INT,
+        plan_snapshot_json JSON,
+        is_used TINYINT(1) DEFAULT 0,
+        used_by_phone TEXT,
+        generated_by INT,
+        used_at DATETIME,
+        expires_at DATETIME,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ vouchers table created');
     
-    for (const stmt of statements) {
-      try {
-        await db.query(stmt);
-        executed++;
-      } catch (err) {
-        if (!err.message.includes('already exists')) {
-          console.error('Statement failed:', err.message);
-        }
-      }
-    }
+    // Create audit_logs table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS audit_logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT,
+        action VARCHAR(100),
+        entity_type VARCHAR(50),
+        entity_id INT,
+        old_values JSON,
+        new_values JSON,
+        ip_address VARCHAR(45),
+        user_agent VARCHAR(500),
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ audit_logs table created');
     
-    // Run seed data
-    const seedQuery = `
+    // Create routers table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS routers (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        ip_address VARCHAR(45) NOT NULL,
+        api_port INT DEFAULT 22,
+        username VARCHAR(100) NOT NULL,
+        password_encrypted TEXT NOT NULL,
+        hotspot_profile VARCHAR(100) DEFAULT 'fastconnect',
+        location VARCHAR(200),
+        is_active TINYINT(1) DEFAULT 1,
+        last_health_check DATETIME,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ routers table created');
+    
+    // Insert admin user
+    await db.query(`
       INSERT IGNORE INTO users (username, email, password_hash, role) VALUES 
-      ('admin', 'admin@fastconnect.co.ke', '$2b$12$9EvQi6vX3LxJ8zDx.Aq1TOY9gq4K5x7z9Qr7WkbzFqIHypI/1.Am6', 'admin');
-      
+      ('admin', 'admin@fastconnect.co.ke', '$2b$12$9EvQi6vX3LxJ8zDx.Aq1TOY9gq4K5x7z9Qr7WkbzFqIHypI/1.Am6', 'admin')
+    `);
+    console.log('✅ Admin user inserted');
+    
+    // Insert plans
+    await db.query(`
       INSERT IGNORE INTO pricing_plans (name, duration_hours, price_kes, bandwidth_limit_mbps, features_json, is_popular, display_order) VALUES
       ('2 Hours', 2, 10, 2, '{"unlimited_data": true}', 0, 1),
       ('4 Hours', 4, 15, 2, '{"unlimited_data": true}', 0, 2),
       ('8 Hours', 8, 25, 2, '{"unlimited_data": true}', 0, 3),
       ('24 Hours', 24, 40, 2, '{"unlimited_data": true}', 1, 4),
       ('Weekly', 168, 200, 2, '{"unlimited_data": true}', 0, 5),
-      ('Monthly', 720, 600, 2, '{"unlimited_data": true}', 0, 6);
-      
+      ('Monthly', 720, 600, 2, '{"unlimited_data": true}', 0, 6)
+    `);
+    console.log('✅ Plans inserted');
+    
+    // Insert demo voucher
+    await db.query(`
       INSERT IGNORE INTO vouchers (voucher_code, plan_id, plan_snapshot_json, expires_at) VALUES
-      ('FC-DEMO-2024', 4, '{"id":4,"name":"24 Hours","price_kes":40,"duration_hours":24,"bandwidth_limit_mbps":2}', '2026-12-31 23:59:59');
-    `;
+      ('FC-DEMO-2024', 4, '{"id":4,"name":"24 Hours","price_kes":40,"duration_hours":24,"bandwidth_limit_mbps":2}', '2026-12-31 23:59:59')
+    `);
+    console.log('✅ Demo voucher inserted');
     
-    const seedStatements = seedQuery.split(';').filter(s => s.trim().length > 0);
-    for (const stmt of seedStatements) {
-      try {
-        await db.query(stmt);
-        executed++;
-      } catch (err) {
-        if (!err.message.includes('Duplicate entry')) {
-          console.error('Seed statement failed:', err.message);
-        }
-      }
-    }
-    
-    res.json({ 
-      success: true, 
-      message: `Executed ${executed} statements`,
-      timestamp: new Date().toISOString()
-    });
+    res.json({ success: true, message: 'All tables created and data inserted successfully!' });
   } catch (err) {
-    console.error('Migration error:', err);
+    console.error('Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
