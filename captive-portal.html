@@ -22,37 +22,15 @@
   }
   body{font-family:var(--font);background:#F8FAFC;color:var(--text);min-height:100vh;max-width:420px;margin:0 auto;position:relative;overflow-x:hidden;}
 
-  .header{padding:28px 20px 24px;position:relative;overflow:hidden;}
+  .header{padding:28px 20px 24px;position:relative;overflow:hidden;background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 100%);}
   .header::before{content:'';position:absolute;inset:0;opacity:0.12;background:repeating-linear-gradient(45deg,rgba(255,255,255,0.3) 0,rgba(255,255,255,0.3) 1px,transparent 0,transparent 50%);background-size:10px 10px;}
   .header-inner{position:relative;z-index:1;}
   .logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
   .logo-icon{width:36px;height:36px;background:rgba(255,255,255,0.25);border-radius:10px;display:flex;align-items:center;justify-content:center;}
   .logo-icon svg{width:20px;height:20px;fill:white;}
   .logo-text{font-size:17px;font-weight:800;color:white;letter-spacing:-0.3px;}
-  .status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:12px;}
-  .status-dot{width:7px;height:7px;border-radius:50%;background:white;}
-  .status-dot.pulse{animation:pulse 1.5s infinite;}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
   .header-title{font-size:26px;font-weight:800;color:white;line-height:1.2;letter-spacing:-0.5px;}
   .header-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px;font-weight:500;}
-  .header-blue{background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 100%);}
-  .header-green{background:linear-gradient(135deg,#16A34A 0%,#15803D 100%);}
-  .header-orange{background:linear-gradient(135deg,#EA580C 0%,#C2410C 100%);}
-
-  .timer-box{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:var(--radius-sm);padding:14px 16px;margin-top:16px;}
-  .timer-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:6px;}
-  .timer-display{font-family:var(--mono);font-size:34px;font-weight:600;color:white;letter-spacing:2px;}
-  .timer-plan{font-size:12px;color:rgba(255,255,255,0.65);margin-top:4px;font-weight:500;}
-
-  .creds-box{margin:16px 20px 0;background:var(--yellow-bg);border:1.5px solid #FDE68A;border-radius:var(--radius-sm);padding:14px 16px;}
-  .creds-label{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--yellow);margin-bottom:10px;}
-  .cred-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-  .cred-row:last-child{margin-bottom:0;}
-  .cred-key{font-size:12px;color:var(--text-muted);font-weight:500;}
-  .cred-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);}
-  .copy-btn{background:var(--yellow-light);border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--yellow);cursor:pointer;letter-spacing:0.3px;transition:all 0.15s;}
-  .copy-btn:hover{background:#FDE68A;}
-  .copy-btn:active{transform:scale(0.96);}
 
   .content{padding:20px;}
   .section-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;}
@@ -77,15 +55,6 @@
 
   .voucher-link{display:block;text-align:center;margin-top:20px;padding:14px;border:1.5px dashed var(--gray-border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;transition:all 0.2s;}
   .voucher-link:hover{background:var(--blue-light);border-color:var(--blue);}
-
-  .disconnected-info{background:var(--white);border:1.5px solid var(--gray-border);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
-  .disc-plan{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
-  .disc-expiry{font-size:13px;color:var(--text-muted);font-weight:500;}
-  .disc-expiry span{font-weight:700;color:var(--orange);}
-  .reconnect-btn{width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:16px;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;margin-bottom:12px;transition:all 0.2s;}
-  .reconnect-btn:hover{background:#1D4ED8;}
-  .disconnect-btn{width:100%;background:var(--red-light);color:var(--red);border:1.5px solid #FCA5A5;border-radius:var(--radius-sm);padding:14px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:10px;}
-  .disconnect-btn:hover{background:#FEE2E2;}
 
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s;}
   .overlay.active{opacity:1;pointer-events:all;}
@@ -129,14 +98,6 @@
   .payment-status-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;}
   .payment-status-sub{font-size:13px;color:var(--text-muted);line-height:1.5;}
 
-  .info-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-border);}
-  .info-row:last-child{border-bottom:none;}
-  .info-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .info-icon.blue{background:var(--blue-light);}
-  .info-icon.green{background:var(--green-light);}
-  .info-key{font-size:12px;color:var(--text-muted);font-weight:500;margin-bottom:2px;}
-  .info-val{font-size:14px;font-weight:700;color:var(--text);}
-
   .plan-skeleton{height:130px;background:linear-gradient(90deg,#F1F5F9 25%,#E2E8F0 50%,#F1F5F9 75%);background-size:200% 100%;border-radius:var(--radius);animation:shimmer 1.4s infinite;}
   @keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
 </style>
@@ -145,9 +106,9 @@
 
 <div class="toast-container" id="toasts"></div>
 
-<!-- ===== STATE: PLAN SELECTION ===== -->
-<div id="state-plans">
-  <div class="header header-blue">
+<!-- MAIN CONTENT - ONLY PLANS PAGE -->
+<div id="app">
+  <div class="header">
     <div class="header-inner">
       <div class="logo">
         <div class="logo-icon">
@@ -162,93 +123,14 @@
 
   <div class="content">
     <div class="section-title">Available Plans</div>
-    <div class="plans-grid" id="plans-grid"></div>
+    <div class="plans-grid" id="plans-grid">
+      <div class="plan-skeleton"></div>
+      <div class="plan-skeleton"></div>
+      <div class="plan-skeleton"></div>
+    </div>
     <div class="voucher-link" onclick="openVoucherModal()">
       🎟 Have a voucher? Redeem it here
     </div>
-  </div>
-</div>
-
-<!-- ===== STATE: CONNECTED ===== -->
-<div id="state-connected" style="display:none;">
-  <div class="header header-green">
-    <div class="header-inner">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24"><path d="M1.293 8.395A14.9 14.9 0 0112 4c3.9 0 7.45 1.49 10.107 3.93l1.307-1.46A17 17 0 0012 2 16.9 16.9 0 00.001 6.876zM12 10a7 7 0 00-4.95 2.05L8.465 13.5A5 5 0 0112 12a5 5 0 013.535 1.5l1.414-1.45A7 7 0 0012 10zm0 4a3 3 0 00-2.121.879L12 17l2.121-2.121A3 3 0 0012 14z"/></svg>
-        </div>
-        <span class="logo-text">FastConnect Internet</span>
-      </div>
-      <div class="status-badge"><span class="status-dot pulse"></span>Connected</div>
-      <div class="header-title" id="connected-plan-name">24 Hours Plan</div>
-      <div class="header-sub">Unlimited data · 2 Mbps</div>
-      <div class="timer-box">
-        <div class="timer-label">Time Remaining</div>
-        <div class="timer-display" id="countdown">23:47:12</div>
-        <div class="timer-plan">Active until <span id="expiry-time">Tomorrow 6:45 PM</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="creds-box">
-    <div class="creds-label">WiFi Credentials</div>
-    <div class="cred-row">
-      <span class="cred-key">Username</span>
-      <span class="cred-val" id="cred-user">fc_8x2k9</span>
-      <button class="copy-btn" onclick="copyText('fc_8x2k9','Username')">Copy</button>
-    </div>
-    <div class="cred-row">
-      <span class="cred-key">Password</span>
-      <span class="cred-val" id="cred-pass">mX7#nQ3!</span>
-      <button class="copy-btn" onclick="copyText('mX7#nQ3!','Password')">Copy</button>
-    </div>
-  </div>
-
-  <div class="content">
-    <div class="section-title">Session Info</div>
-    <div style="background:var(--white);border:1.5px solid var(--gray-border);border-radius:var(--radius);padding:4px 16px;">
-      <div class="info-row">
-        <div class="info-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="#16A34A"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg></div>
-        <div><div class="info-key">Connected since</div><div class="info-val" id="connected-since">6:45 PM today</div></div>
-      </div>
-      <div class="info-row">
-        <div class="info-icon blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="#2563EB"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 115 9.5 4.5 4.5 0 019.5 14z"/></svg></div>
-        <div><div class="info-key">Phone</div><div class="info-val" id="connected-phone">0712 *** ***</div></div>
-      </div>
-    </div>
-    <button class="disconnect-btn" onclick="handleDisconnect()">Disconnect from Network</button>
-  </div>
-</div>
-
-<!-- ===== STATE: DISCONNECTED ===== -->
-<div id="state-disconnected" style="display:none;">
-  <div class="header header-orange">
-    <div class="header-inner">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24"><path d="M1.293 8.395A14.9 14.9 0 0112 4c3.9 0 7.45 1.49 10.107 3.93l1.307-1.46A17 17 0 0012 2 16.9 16.9 0 00.001 6.876zM12 10a7 7 0 00-4.95 2.05L8.465 13.5A5 5 0 0112 12a5 5 0 013.535 1.5l1.414-1.45A7 7 0 0012 10zm0 4a3 3 0 00-2.121.879L12 17l2.121-2.121A3 3 0 0012 14z"/></svg>
-        </div>
-        <span class="logo-text">FastConnect Internet</span>
-      </div>
-      <div class="status-badge" style="background:rgba(255,255,255,0.2);">
-        <span class="status-dot" style="background:#FED7AA;"></span>Disconnected
-      </div>
-      <div class="header-title">Your plan is still active</div>
-      <div class="header-sub">Tap Reconnect to restore your connection</div>
-    </div>
-  </div>
-
-  <div class="content">
-    <div class="disconnected-info">
-      <div class="disc-plan" id="disc-plan-name">24 Hours Plan</div>
-      <div class="disc-expiry">Expires <span id="disc-expiry">Tomorrow at 6:45 PM</span></div>
-      <div style="margin-top:12px;height:4px;background:var(--gray-light);border-radius:100px;overflow:hidden;">
-        <div id="disc-progress" style="height:100%;width:62%;background:var(--orange);border-radius:100px;"></div>
-      </div>
-      <div style="margin-top:6px;font-size:11px;color:var(--text-light);font-weight:500;" id="disc-percent">62% of plan time used</div>
-    </div>
-    <button class="reconnect-btn" onclick="handleReconnect()">Reconnect Now</button>
-    <button onclick="showState('plans')" style="width:100%;background:transparent;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);padding:12px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer;">Buy a New Plan</button>
   </div>
 </div>
 
@@ -299,16 +181,12 @@
 
 <script>
 // ===== API CONFIGURATION =====
-// FIXED: Use the correct backend URL
 const API_BASE = 'https://fastconnect-backend-294o.onrender.com';
 const WS_URL = 'wss://fastconnect-backend-294o.onrender.com/ws/plans';
 
 // ===== DATA =====
 let plans = [];
 let selectedPlan = null;
-let timerInterval = null;
-let timeRemaining = 23 * 3600 + 47 * 60 + 12;
-let currentSession = null;
 let ws = null;
 
 // ===== FETCH PLANS =====
@@ -322,16 +200,7 @@ async function fetchPlans() {
     }
   } catch (err) {
     console.error('Failed to fetch plans', err);
-    // Fallback default plans
-    plans = [
-      {id:1,name:'2 Hours',duration_hours:2,price_kes:10,bandwidth_limit_mbps:2,is_popular:false},
-      {id:2,name:'4 Hours',duration_hours:4,price_kes:15,bandwidth_limit_mbps:2,is_popular:false},
-      {id:3,name:'8 Hours',duration_hours:8,price_kes:25,bandwidth_limit_mbps:2,is_popular:false},
-      {id:4,name:'24 Hours',duration_hours:24,price_kes:40,bandwidth_limit_mbps:2,is_popular:true},
-      {id:5,name:'Weekly',duration_hours:168,price_kes:200,bandwidth_limit_mbps:2,is_popular:false},
-      {id:6,name:'Monthly',duration_hours:720,price_kes:600,bandwidth_limit_mbps:2,is_popular:false},
-    ];
-    renderPlans();
+    toast('Could not load plans. Please refresh.', 'error');
   }
 }
 
@@ -344,7 +213,7 @@ function renderPlans() {
     <div class="plan-card${p.is_popular ? ' popular' : ''}">
       ${p.is_popular ? '<div class="popular-badge">⭐ Popular</div>' : ''}
       <div class="plan-top">
-        <div class="plan-name">${p.name}</div>
+        <div class="plan-name">${escapeHtml(p.name)}</div>
         <div class="plan-price">
           <div class="plan-price-num">KES ${p.price_kes}</div>
           <div class="plan-price-sub">one-time</div>
@@ -360,6 +229,12 @@ function renderPlans() {
       </button>
     </div>
   `).join('');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 // ===== WEBSOCKET FOR REAL-TIME UPDATES =====
@@ -392,107 +267,6 @@ function connectWebSocket() {
   ws.onerror = (err) => {
     console.error('WebSocket error', err);
   };
-}
-
-// ===== SESSION CHECK =====
-async function checkSession() {
-  const deviceId = localStorage.getItem('fc_device_id') || 
-    `${Date.now()}-${Math.random().toString(36).slice(2)}-${navigator.userAgent.length}`;
-  localStorage.setItem('fc_device_id', deviceId);
-  
-  const phone = sessionStorage.getItem('fc_phone');
-  if (!phone) {
-    showState('plans');
-    return;
-  }
-  
-  try {
-    const response = await fetch(`${API_BASE}/api/sessions/status/${phone}`, {
-      headers: { 'X-Device-Id': deviceId }
-    });
-    const data = await response.json();
-    
-    if (data.active) {
-      currentSession = data;
-      sessionStorage.setItem('fc_session', JSON.stringify(data));
-      showState('connected');
-      updateConnectedView(data);
-      startTimer(data.endTime);
-    } else {
-      const remembered = sessionStorage.getItem('fc_disconnected_session');
-      if (remembered) {
-        const s = JSON.parse(remembered);
-        if (new Date(s.endTime) > new Date()) {
-          currentSession = s;
-          showState('disconnected');
-          updateDisconnectedView(s);
-        } else {
-          sessionStorage.removeItem('fc_disconnected_session');
-          showState('plans');
-        }
-      } else {
-        showState('plans');
-      }
-    }
-  } catch (err) {
-    console.error('Session check failed', err);
-    showState('plans');
-  }
-}
-
-// ===== UPDATE CONNECTED VIEW =====
-function updateConnectedView(session) {
-  const snap = session.planSnapshot || {};
-  document.getElementById('connected-plan-name').textContent = snap.name || session.planName;
-  document.getElementById('cred-user').textContent = session.hotspotUsername;
-  document.getElementById('cred-pass').textContent = session.hotspotPassword;
-  document.getElementById('connected-since').textContent = session.startTime ? new Date(session.startTime).toLocaleString() : 'Just now';
-  document.getElementById('connected-phone').textContent = session.phone ? '0' + session.phone.slice(-9) : '****';
-  document.getElementById('expiry-time').textContent = new Date(session.endTime).toLocaleString();
-}
-
-function updateDisconnectedView(session) {
-  const snap = session.planSnapshot || {};
-  const endTime = new Date(session.endTime);
-  const totalMs = (snap.duration_hours || 24) * 3600000;
-  const remainingMs = Math.max(0, endTime - Date.now());
-  const pct = Math.round(100 - (remainingMs / totalMs) * 100);
-  
-  document.getElementById('disc-plan-name').textContent = snap.name || 'Unknown Plan';
-  document.getElementById('disc-expiry').textContent = endTime.toLocaleString();
-  document.getElementById('disc-progress').style.width = `${pct}%`;
-  document.getElementById('disc-percent').textContent = `${pct}% of plan time used`;
-}
-
-// ===== TIMER =====
-function startTimer(endTime) {
-  if (timerInterval) clearInterval(timerInterval);
-  
-  const updateTimer = () => {
-    const remaining = Math.max(0, Math.floor((new Date(endTime) - Date.now()) / 1000));
-    const hours = Math.floor(remaining / 3600);
-    const minutes = Math.floor((remaining % 3600) / 60);
-    const seconds = remaining % 60;
-    document.getElementById('countdown').textContent = 
-      `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
-    
-    if (remaining <= 0) {
-      clearInterval(timerInterval);
-      checkSession();
-    }
-  };
-  
-  updateTimer();
-  timerInterval = setInterval(updateTimer, 1000);
-}
-
-// ===== SHOW STATE =====
-function showState(state) {
-  const states = ['plans', 'connected', 'disconnected'];
-  states.forEach(s => {
-    const el = document.getElementById(`state-${s}`);
-    if (el) el.style.display = s === state ? '' : 'none';
-  });
 }
 
 // ===== PAYMENT MODAL =====
@@ -558,9 +332,8 @@ async function initiatePayment() {
           
           if (status.status === 'completed') {
             clearInterval(pollInterval);
-            toast('Payment successful! Connecting you...', 'success');
-            sessionStorage.setItem('fc_phone', `0${phone}`);
-            setTimeout(() => checkSession(), 2000);
+            toast('Payment successful! You will receive WiFi credentials via SMS.', 'success');
+            document.getElementById('phone-input').value = '';
           } else if (status.status === 'failed') {
             clearInterval(pollInterval);
             toast('Payment failed. Please try again.', 'error');
@@ -601,7 +374,7 @@ function formatVoucher(el) {
 
 async function redeemVoucher() {
   const code = document.getElementById('voucher-input').value;
-  const phone = '0712345678'; // Demo phone
+  const phone = '0712345678';
   const deviceId = localStorage.getItem('fc_device_id') || 
     `${Date.now()}-${Math.random().toString(36).slice(2)}-${navigator.userAgent.length}`;
   const errEl = document.getElementById('voucher-error');
@@ -612,12 +385,11 @@ async function redeemVoucher() {
     return;
   }
   
-  // Demo voucher
   if (code === 'FC-DEMO-2024') {
     closeModal('voucher-modal');
     toast('Voucher redeemed! 24 hours free access', 'success');
-    sessionStorage.setItem('fc_phone', phone);
-    setTimeout(() => checkSession(), 2000);
+    toast('WiFi credentials will be sent to your phone.', 'info');
+    document.getElementById('voucher-input').value = '';
     return;
   }
   
@@ -633,8 +405,7 @@ async function redeemVoucher() {
     if (data.success) {
       closeModal('voucher-modal');
       toast(`Voucher redeemed! ${data.planName} active.`, 'success');
-      sessionStorage.setItem('fc_phone', phone);
-      setTimeout(() => checkSession(), 2000);
+      document.getElementById('voucher-input').value = '';
     } else {
       errEl.textContent = data.error || 'Invalid or expired voucher';
       errEl.style.display = 'block';
@@ -645,26 +416,6 @@ async function redeemVoucher() {
     errEl.style.display = 'block';
     setTimeout(() => errEl.style.display = 'none', 3000);
   }
-}
-
-// ===== DISCONNECT / RECONNECT =====
-function handleDisconnect() {
-  if (currentSession) {
-    sessionStorage.setItem('fc_disconnected_session', JSON.stringify(currentSession));
-  }
-  showState('disconnected');
-  toast('Disconnected from network', 'info');
-}
-
-async function handleReconnect() {
-  toast('Reconnecting...', 'info');
-  await checkSession();
-  sessionStorage.removeItem('fc_disconnected_session');
-}
-
-function copyText(text, label) {
-  navigator.clipboard?.writeText(text).catch(() => {});
-  toast(`${label} copied!`, 'success');
 }
 
 // ===== MODAL HELPERS =====
@@ -697,13 +448,10 @@ document.querySelectorAll('.overlay').forEach(o => {
 });
 
 fetchPlans();
-checkSession();
 connectWebSocket();
 
 // Poll for plan updates every 30 seconds (fallback)
 setInterval(fetchPlans, 30000);
-// Poll for session every 30 seconds
-setInterval(checkSession, 30000);
 </script>
 </body>
 </html>
