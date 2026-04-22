@@ -2,7 +2,68 @@
 // FastConnect Internet — Backend API Server
 // Node.js / Express — Production Ready
 // ============================================================
-
+// ============================================================
+// TEMPORARY MIGRATION ENDPOINT - Remove after migrations complete
+// ============================================================
+app.get('/api/run-migrations', async (req, res) => {
+  const authKey = req.query.key;
+  if (authKey !== 'FASTCONNECT_MIGRATE_2024') {
+    return res.status(401).json({ error: 'Invalid migration key' });
+  }
+  
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    
+    console.log('🔄 Running migrations...');
+    
+    // Read schema.sql
+    const schemaPath = path.join(__dirname, 'schema.sql');
+    const schema = fs.readFileSync(schemaPath, 'utf8');
+    
+    // Split by semicolon and execute each statement
+    const statements = schema.split(';').filter(s => s.trim().length > 0);
+    let executed = 0;
+    
+    for (const stmt of statements) {
+      try {
+        await db.query(stmt);
+        executed++;
+      } catch (err) {
+        // Skip errors for duplicate tables
+        if (!err.message.includes('already exists')) {
+          console.error('Statement failed:', err.message);
+        }
+      }
+    }
+    
+    // Run seed
+    const seedPath = path.join(__dirname, 'seed.sql');
+    if (fs.existsSync(seedPath)) {
+      const seed = fs.readFileSync(seedPath, 'utf8');
+      const seedStatements = seed.split(';').filter(s => s.trim().length > 0);
+      for (const stmt of seedStatements) {
+        try {
+          await db.query(stmt);
+          executed++;
+        } catch (err) {
+          if (!err.message.includes('Duplicate entry')) {
+            console.error('Seed statement failed:', err.message);
+          }
+        }
+      }
+    }
+    
+    res.json({ 
+      success: true, 
+      message: `Executed ${executed} statements`,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('Migration error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
