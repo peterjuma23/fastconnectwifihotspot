@@ -44,7 +44,7 @@ const logger = winston.createLogger({
 });
 
 // ============================================================
-// DATABASE POOL (MySQL with SSL support for Aiven)
+// DATABASE POOL (MySQL with SSL - accept self-signed certs)
 // ============================================================
 const db = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
@@ -52,7 +52,9 @@ const db = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || 'fastconnect_db',
   port: parseInt(process.env.DB_PORT) || 3306,
-  ssl: process.env.DB_SSL ? JSON.parse(process.env.DB_SSL) : undefined,
+  ssl: {
+    rejectUnauthorized: false  // Accept self-signed certificates from Aiven
+  },
   waitForConnections: true,
   connectionLimit: 20,
   queueLimit: 0,
@@ -372,9 +374,33 @@ app.get('/api/run-migrations', async (req, res) => {
   
   try {
     console.log('🔄 Running migrations...');
+    console.log('Current directory:', __dirname);
     
-    // Read schema.sql
-    const schemaPath = path.join(__dirname, 'schema.sql');
+    // Try multiple possible locations for schema.sql
+    const possiblePaths = [
+      path.join(__dirname, 'schema.sql'),
+      path.join(__dirname, '../schema.sql'),
+      path.join(process.cwd(), 'schema.sql'),
+      path.join(process.cwd(), 'backend/schema.sql'),
+      '/opt/render/project/src/backend/schema.sql',
+      '/opt/render/project/src/schema.sql'
+    ];
+    
+    let schemaPath = null;
+    for (const p of possiblePaths) {
+      if (fs.existsSync(p)) {
+        schemaPath = p;
+        console.log('Found schema.sql at:', p);
+        break;
+      }
+    }
+    
+    if (!schemaPath) {
+      const files = fs.readdirSync(__dirname);
+      console.log('Files in directory:', files);
+      return res.status(500).json({ error: 'schema.sql not found', files: files });
+    }
+    
     const schema = fs.readFileSync(schemaPath, 'utf8');
     
     // Split by semicolon and execute each statement
@@ -386,7 +412,6 @@ app.get('/api/run-migrations', async (req, res) => {
         await db.query(stmt);
         executed++;
       } catch (err) {
-        // Skip errors for duplicate tables
         if (!err.message.includes('already exists')) {
           console.error('Statement failed:', err.message);
         }
