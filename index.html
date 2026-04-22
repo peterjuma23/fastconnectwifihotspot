@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>FastConnect Internet</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:#F8FAFC;color:#0F172A;max-width:420px;margin:0 auto;}
+
+  .header{background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 100%);padding:28px 20px 24px;color:white;}
+  .logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .logo-icon{width:36px;height:36px;background:rgba(255,255,255,0.25);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .logo-text{font-size:17px;font-weight:800;}
+  .header-title{font-size:26px;font-weight:800;margin-top:8px;}
+  .header-sub{font-size:13px;opacity:0.75;margin-top:4px;}
+
+  .content{padding:20px;}
+  .section-title{font-size:12px;font-weight:700;text-transform:uppercase;color:#64748B;margin-bottom:14px;}
+
+  .plans-grid{display:flex;flex-direction:column;gap:12px;}
+  .plan-card{background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:18px;position:relative;}
+  .plan-card.popular{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,0.08);}
+  .popular-badge{position:absolute;top:0;right:0;background:#2563EB;color:white;font-size:10px;font-weight:800;padding:4px 12px;border-radius:0 16px 0 10px;}
+  .plan-top{display:flex;justify-content:space-between;margin-bottom:10px;}
+  .plan-name{font-size:18px;font-weight:800;}
+  .plan-price-num{font-size:24px;font-weight:800;color:#2563EB;}
+  .plan-price-sub{font-size:11px;color:#64748B;}
+  .plan-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .plan-feat{display:flex;align-items:center;gap:4px;font-size:12px;color:#64748B;}
+  .plan-feat svg{width:13px;height:13px;fill:#16A34A;}
+  .pay-btn{width:100%;background:#2563EB;color:white;border:none;border-radius:10px;padding:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .pay-btn:hover{background:#1D4ED8;}
+
+  .voucher-link{display:block;text-align:center;margin-top:20px;padding:14px;border:1.5px dashed #E2E8F0;border-radius:10px;color:#2563EB;cursor:pointer;}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+  .overlay.active{opacity:1;pointer-events:all;}
+  .modal{background:white;border-radius:24px 24px 0 0;padding:28px 20px 40px;width:100%;transform:translateY(100%);transition:transform 0.3s;}
+  .overlay.active .modal{transform:translateY(0);}
+  .modal-close{position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:50%;background:#F1F5F9;border:none;cursor:pointer;font-size:18px;}
+  .modal-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+  .modal-sub{font-size:13px;color:#64748B;margin-bottom:24px;}
+  .modal-amount{background:#DBEAFE;border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;margin-bottom:20px;}
+  .modal-amount-val{font-size:22px;font-weight:800;color:#2563EB;}
+  .phone-wrap{display:flex;gap:8px;}
+  .phone-prefix{background:#F1F5F9;border:1.5px solid #E2E8F0;border-radius:10px;padding:0 14px;display:flex;align-items:center;}
+  input{flex:1;border:1.5px solid #E2E8F0;border-radius:10px;padding:13px 16px;outline:none;}
+  input:focus{border-color:#2563EB;}
+  .submit-btn{width:100%;background:#16A34A;color:white;border:none;border-radius:10px;padding:15px;font-weight:700;cursor:pointer;margin-top:16px;}
+  .submit-btn:disabled{background:#E2E8F0;cursor:not-allowed;}
+  .input-hint{font-size:11px;color:#94A3B8;margin-top:6px;}
+  .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:999;width:90%;max-width:360px;}
+  .toast{background:#0F172A;color:white;padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:8px;animation:toastIn 0.3s;}
+  .toast.success{background:#16A34A;}
+  .toast.error{background:#DC2626;}
+  @keyframes toastIn{from{transform:translateY(-10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<div class="toast-container" id="toasts"></div>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M1.293 8.395A14.9 14.9 0 0112 4c3.9 0 7.45 1.49 10.107 3.93l1.307-1.46A17 17 0 0012 2 16.9 16.9 0 00.001 6.876zM12 10a7 7 0 00-4.95 2.05L8.465 13.5A5 5 0 0112 12a5 5 0 013.535 1.5l1.414-1.45A7 7 0 0012 10zm0 4a3 3 0 00-2.121.879L12 17l2.121-2.121A3 3 0 0012 14z"/></svg>
+    </div>
+    <span class="logo-text">FastConnect Internet</span>
+  </div>
+  <div class="header-title">Get Connected</div>
+  <div class="header-sub">Choose a plan and pay with M-Pesa</div>
+</div>
+
+<div class="content">
+  <div class="section-title">Available Plans</div>
+  <div class="plans-grid" id="plans-grid"></div>
+  <div class="voucher-link" onclick="openVoucherModal()">🎟 Have a voucher? Redeem it here</div>
+</div>
+
+<!-- MPESA MODAL -->
+<div class="overlay" id="mpesa-modal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeModal('mpesa-modal')">×</button>
+    <div class="modal-handle"></div>
+    <div class="modal-title">Pay with M-Pesa</div>
+    <div class="modal-sub" id="modal-plan-name">24 Hours — KES 40</div>
+    <div class="modal-amount">
+      <span class="modal-amount-label">Amount to pay</span>
+      <span class="modal-amount-val" id="modal-amount">KES 40</span>
+    </div>
+    <div class="input-group">
+      <label class="input-label">M-Pesa Phone Number</label>
+      <div class="phone-wrap">
+        <div class="phone-prefix">🇰🇪 +254</div>
+        <input type="tel" id="phone-input" placeholder="712 345 678" maxlength="9" oninput="validatePhone()">
+      </div>
+      <div class="input-hint">Enter your M-Pesa registered number (e.g. 712345678)</div>
+    </div>
+    <button class="submit-btn" id="mpesa-submit" onclick="initiatePayment()" disabled>
+      <span id="submit-text">Send STK Push</span>
+      <div id="submit-spinner" class="spinner" style="display:none;"></div>
+    </button>
+  </div>
+</div>
+
+<!-- VOUCHER MODAL -->
+<div class="overlay" id="voucher-modal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeModal('voucher-modal')">×</button>
+    <div class="modal-handle"></div>
+    <div class="modal-title">Redeem Voucher</div>
+    <div class="modal-sub">Enter your voucher code to get connected</div>
+    <div class="input-group">
+      <label class="input-label">Voucher Code</label>
+      <input type="text" id="voucher-input" placeholder="FC-XXXX-XXXX" maxlength="12" style="text-transform:uppercase;letter-spacing:1px;" oninput="formatVoucher(this)">
+      <div class="input-hint">Try demo voucher: FC-DEMO-2024</div>
+    </div>
+    <div id="voucher-error" style="display:none;background:#FEE2E2;border-radius:10px;padding:10px;margin-bottom:16px;font-size:13px;color:#DC2626;"></div>
+    <button class="submit-btn" onclick="redeemVoucher()" style="background:#2563EB;">Redeem Voucher</button>
+  </div>
+</div>
+
+<script>
+// ===== HARDCODED PLANS (no API call needed) =====
+const plans = [
+  {id:1, name:'2 Hours', duration_hours:2, price_kes:10, bandwidth_limit_mbps:2, is_popular:false},
+  {id:2, name:'4 Hours', duration_hours:4, price_kes:15, bandwidth_limit_mbps:2, is_popular:false},
+  {id:3, name:'8 Hours', duration_hours:8, price_kes:25, bandwidth_limit_mbps:2, is_popular:false},
+  {id:4, name:'24 Hours', duration_hours:24, price_kes:40, bandwidth_limit_mbps:2, is_popular:true},
+  {id:5, name:'Weekly', duration_hours:168, price_kes:200, bandwidth_limit_mbps:2, is_popular:false},
+  {id:6, name:'Monthly', duration_hours:720, price_kes:600, bandwidth_limit_mbps:2, is_popular:false}
+];
+
+let selectedPlan = null;
+
+// ===== RENDER PLANS =====
+function renderPlans() {
+  const grid = document.getElementById('plans-grid');
+  if (!grid) return;
+  
+  grid.innerHTML = plans.map(p => `
+    <div class="plan-card${p.is_popular ? ' popular' : ''}">
+      ${p.is_popular ? '<div class="popular-badge">⭐ Popular</div>' : ''}
+      <div class="plan-top">
+        <div class="plan-name">${p.name}</div>
+        <div class="plan-price">
+          <div class="plan-price-num">KES ${p.price_kes}</div>
+          <div class="plan-price-sub">one-time</div>
+        </div>
+      </div>
+      <div class="plan-features">
+        <span class="plan-feat"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#16A34A"/></svg>Unlimited Data</span>
+        <span class="plan-feat"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#16A34A"/></svg>${p.bandwidth_limit_mbps} Mbps</span>
+        <span class="plan-feat"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#16A34A"/></svg>${p.name} access</span>
+      </div>
+      <button class="pay-btn" onclick="openPayModal(${p.id})">
+        <span class="mpesa-logo">M</span> Pay KES ${p.price_kes}
+      </button>
+    </div>
+  `).join('');
+}
+
+// ===== PAYMENT MODAL =====
+function openPayModal(planId) {
+  selectedPlan = plans.find(p => p.id === planId);
+  if (!selectedPlan) return;
+  
+  document.getElementById('modal-plan-name').textContent = `${selectedPlan.name} — KES ${selectedPlan.price_kes}`;
+  document.getElementById('modal-amount').textContent = `KES ${selectedPlan.price_kes}`;
+  document.getElementById('phone-input').value = '';
+  document.getElementById('mpesa-submit').disabled = true;
+  openModal('mpesa-modal');
+}
+
+function validatePhone() {
+  const val = document.getElementById('phone-input').value.replace(/\s/g, '');
+  const valid = /^[71][0-9]{8}$/.test(val);
+  document.getElementById('mpesa-submit').disabled = !valid;
+}
+
+async function initiatePayment() {
+  const phone = document.getElementById('phone-input').value;
+  const deviceId = localStorage.getItem('fc_device_id') || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  localStorage.setItem('fc_device_id', deviceId);
+  
+  const btn = document.getElementById('mpesa-submit');
+  const submitText = document.getElementById('submit-text');
+  const submitSpinner = document.getElementById('submit-spinner');
+  
+  btn.disabled = true;
+  submitText.textContent = 'Sending...';
+  submitSpinner.style.display = 'block';
+  
+  try {
+    const idempotencyKey = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+    const response = await fetch('https://fastconnect-backend-294o.onrender.com/api/payments/initiate', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Idempotency-Key': idempotencyKey
+      },
+      body: JSON.stringify({ 
+        phone: `0${phone}`, 
+        planId: selectedPlan.id, 
+        deviceId: deviceId 
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      closeModal('mpesa-modal');
+      toast('STK Push sent! Check your phone', 'info');
+      
+      let attempts = 0;
+      const pollInterval = setInterval(async () => {
+        attempts++;
+        try {
+          const statusRes = await fetch(`https://fastconnect-backend-294o.onrender.com/api/payments/status/${data.checkoutRequestId}`);
+          const status = await statusRes.json();
+          
+          if (status.status === 'completed') {
+            clearInterval(pollInterval);
+            toast('Payment successful! You will receive WiFi credentials via SMS.', 'success');
+          } else if (status.status === 'failed') {
+            clearInterval(pollInterval);
+            toast('Payment failed. Please try again.', 'error');
+          }
+        } catch (err) {}
+        
+        if (attempts >= 30) {
+          clearInterval(pollInterval);
+          toast('Payment confirmation timeout. Please contact support.', 'error');
+        }
+      }, 3000);
+    } else {
+      toast(data.error || 'Payment failed', 'error');
+    }
+  } catch (err) {
+    toast('Connection error. Please try again.', 'error');
+  } finally {
+    submitText.textContent = 'Send STK Push';
+    submitSpinner.style.display = 'none';
+  }
+}
+
+// ===== VOUCHER =====
+function openVoucherModal() {
+  document.getElementById('voucher-input').value = '';
+  document.getElementById('voucher-error').style.display = 'none';
+  openModal('voucher-modal');
+}
+
+function formatVoucher(el) {
+  let val = el.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+  if (val.length > 2) val = val.slice(0,2) + '-' + val.slice(2);
+  if (val.length > 7) val = val.slice(0,7) + '-' + val.slice(7);
+  el.value = val.slice(0,12);
+}
+
+async function redeemVoucher() {
+  const code = document.getElementById('voucher-input').value;
+  const phone = '0712345678';
+  const deviceId = localStorage.getItem('fc_device_id') || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const errEl = document.getElementById('voucher-error');
+  
+  if (!code) {
+    errEl.textContent = 'Please enter a voucher code';
+    errEl.style.display = 'block';
+    return;
+  }
+  
+  if (code === 'FC-DEMO-2024') {
+    closeModal('voucher-modal');
+    toast('Voucher redeemed! 24 hours free access', 'success');
+    document.getElementById('voucher-input').value = '';
+    return;
+  }
+  
+  try {
+    const response = await fetch('https://fastconnect-backend-294o.onrender.com/api/vouchers/redeem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ voucherCode: code, phone: phone, deviceId: deviceId })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      closeModal('voucher-modal');
+      toast(`Voucher redeemed! ${data.planName} active.`, 'success');
+      document.getElementById('voucher-input').value = '';
+    } else {
+      errEl.textContent = data.error || 'Invalid or expired voucher';
+      errEl.style.display = 'block';
+      setTimeout(() => errEl.style.display = 'none', 3000);
+    }
+  } catch (err) {
+    errEl.textContent = 'Connection error. Please try again.';
+    errEl.style.display = 'block';
+    setTimeout(() => errEl.style.display = 'none', 3000);
+  }
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function toast(msg, type = 'info') {
+  const container = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>${msg}`;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('fade-out');
+    setTimeout(() => el.remove(), 300);
+  }, 3000);
+}
+
+document.querySelectorAll('.overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
+});
+
+// Load plans immediately
+renderPlans();
+</script>
+</body>
+</html>
