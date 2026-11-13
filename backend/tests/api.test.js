@@ -129,6 +129,29 @@ describe('POST /api/admin/auth/login', () => {
   });
 });
 
+describe('Admin password recovery', () => {
+  it('rejects invalid recovery email addresses', async () => {
+    const res = await request(app)
+      .post('/api/admin/auth/password-reset/request')
+      .send({ email: 'not-an-email' });
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects malformed reset tokens', async () => {
+    const res = await request(app)
+      .post('/api/admin/auth/password-reset/confirm')
+      .send({ token: 'invalid', newPassword: 'a-strong-password-123' });
+    expect(res.status).toBe(400);
+  });
+
+  it('requires a strong new password', async () => {
+    const res = await request(app)
+      .post('/api/admin/auth/password-reset/confirm')
+      .send({ token: 'a'.repeat(64), newPassword: 'short' });
+    expect(res.status).toBe(400);
+  });
+});
+
 // ── Protected Admin Routes ───────────────────────────────────────
 describe('Admin routes require authentication', () => {
   const adminRoutes = [

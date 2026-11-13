@@ -9,6 +9,7 @@ const http = require('http');
 const WebSocket = require('ws');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const { body, param, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
@@ -138,13 +139,24 @@ async function requireAuth(req, res, next) {
     }
     const revoked = await redis.get(`revoked:${token}`);
     if (revoked) return res.status(401).json({ error: 'Token revoked' });
+    const [[user]] = await db.execute(
+      'SELECT token_version FROM users WHERE id = ? AND deleted_at IS NULL',
+      [payload.id]
+    );
+    if (!user || Number(user.token_version) !== Number(payload.tokenVersion)) {
+      return res.status(401).json({ error: 'Session invalid' });
+    }
     req.user = payload;
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       return res.status(401).json({ error: 'Token expired' });
     }
-    return res.status(401).json({ error: 'Invalid token' });
+    if (err.name === 'JsonWebTokenError' || err.name === 'NotBeforeError') {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    logger.error('Authentication validation error', err);
+    return res.status(503).json({ error: 'Authentication service unavailable' });
   }
 }
 
@@ -424,6 +436,7 @@ app.get('/api/create-tables', async (req, res) => {
         role VARCHAR(20) DEFAULT 'staff',
         mfa_secret TEXT,
         mfa_enabled TINYINT(1) DEFAULT 0,
+        token_version INT UNSIGNED NOT NULL DEFAULT 0,
         last_login_ip VARCHAR(45),
         last_login_at DATETIME,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -432,6 +445,19 @@ app.get('/api/create-tables', async (req, res) => {
       )
     `);
     console.log('✅ users table created');
+
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS admin_password_reset_tokens (
+        token_hash CHAR(64) PRIMARY KEY,
+        user_id INT UNSIGNED NOT NULL,
+        expires_at DATETIME NOT NULL,
+        used_at DATETIME,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_admin_password_reset_user (user_id),
+        INDEX idx_admin_password_reset_expiry (expires_at)
+      ) ENGINE=InnoDB
+    `);
+    console.log('✅ admin password reset tokens table created');
     
     // Create sessions table
     await db.query(`
@@ -583,6 +609,24 @@ const loginLimiter = rateLimit({
   keyGenerator: req => req.ip,
 });
 
+const passwordResetRequestLimiter = rateLimit({
+  windowMs: 60 * 60000,
+  max: 3,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many password reset requests. Try again later.' },
+  keyGenerator: req => req.ip,
+});
+
+const passwordResetLimiter = rateLimit({
+  windowMs: 60 * 60000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many password reset attempts. Try again later.' },
+  keyGenerator: req => req.ip,
+});
+
 const paymentLimiter = rateLimit({
   windowMs: 60000,
   max: 3,
@@ -596,6 +640,36 @@ const adminLimiter = rateLimit({
   keyGenerator: req => req.user?.id || req.ip,
   message: { error: 'Admin rate limit exceeded' },
 });
+
+function getPasswordResetSettings() {
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM, ADMIN_DASHBOARD_URL } = process.env;
+  const port = Number(SMTP_PORT);
+  if (!SMTP_HOST || !Number.isInteger(port) || port < 1 || port > 65535 || !SMTP_FROM || !ADMIN_DASHBOARD_URL) {
+    throw new Error('Admin password reset email settings are incomplete');
+  }
+
+  const dashboardUrl = new URL(ADMIN_DASHBOARD_URL);
+  if (process.env.NODE_ENV === 'production' && dashboardUrl.protocol !== 'https:') {
+    throw new Error('ADMIN_DASHBOARD_URL must use HTTPS in production');
+  }
+
+  if ((SMTP_USER && !SMTP_PASS) || (!SMTP_USER && SMTP_PASS)) {
+    throw new Error('SMTP_USER and SMTP_PASS must both be configured or both be empty');
+  }
+
+  const transportOptions = {
+    host: SMTP_HOST,
+    port,
+    secure: process.env.SMTP_SECURE === 'true',
+  };
+  if (SMTP_USER) transportOptions.auth = { user: SMTP_USER, pass: SMTP_PASS };
+
+  return {
+    transporter: nodemailer.createTransport(transportOptions),
+    from: SMTP_FROM,
+    dashboardUrl,
+  };
+}
 
 app.use(globalLimiter);
 
@@ -1050,7 +1124,8 @@ app.post('/api/admin/auth/login', loginLimiter,
       const payload = { 
         id: user.id, 
         username: user.username, 
-        role: user.role, 
+        role: user.role,
+        tokenVersion: user.token_version,
         ip: req.ip, 
         ua: req.get('User-Agent') 
       };
@@ -1076,6 +1151,165 @@ app.post('/api/admin/auth/login', loginLimiter,
       logger.error('Login error', err);
       res.status(500).json({ error: 'Service unavailable' });
     }
+  }
+);
+
+app.post('/api/admin/auth/password-reset/request', passwordResetRequestLimiter,
+  [body('email').isString().trim().isEmail().isLength({ max: 255 })],
+  handleValidationErrors,
+  async (req, res) => {
+    let settings;
+    try {
+      settings = getPasswordResetSettings();
+    } catch (err) {
+      logger.error('Admin password reset is not configured', err);
+      return res.status(503).json({ error: 'Password reset is temporarily unavailable' });
+    }
+
+    let resetToken;
+    let admin;
+    let connection;
+    try {
+      connection = await db.getConnection();
+      await connection.beginTransaction();
+      const [admins] = await connection.execute(
+        "SELECT id, email FROM users WHERE email = ? AND role = 'admin' AND deleted_at IS NULL FOR UPDATE",
+        [req.body.email.trim()]
+      );
+
+      if (admins.length) {
+        admin = admins[0];
+        resetToken = crypto.randomBytes(32).toString('hex');
+        const tokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+        await connection.execute(
+          'DELETE FROM admin_password_reset_tokens WHERE user_id = ?',
+          [admin.id]
+        );
+        await connection.execute(
+          `INSERT INTO admin_password_reset_tokens (token_hash, user_id, expires_at)
+           VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))`,
+          [tokenHash, admin.id]
+        );
+      }
+
+      await connection.commit();
+    } catch (err) {
+      if (connection) {
+        try {
+          await connection.rollback();
+        } catch (rollbackError) {
+          logger.error('Admin password reset request rollback failed', rollbackError);
+        }
+      }
+      logger.error('Admin password reset request failed', err);
+      return res.status(503).json({ error: 'Password reset is temporarily unavailable' });
+    } finally {
+      connection?.release();
+    }
+
+    if (admin) {
+      try {
+        const resetUrl = new URL(settings.dashboardUrl);
+        resetUrl.hash = new URLSearchParams({ resetToken }).toString();
+        await settings.transporter.sendMail({
+          from: settings.from,
+          to: admin.email,
+          subject: 'Reset your FastConnect admin password',
+          text: `Use this link within one hour to reset your FastConnect admin password:\n\n${resetUrl.toString()}\n\nIf you did not request this, you can ignore this email.`,
+          html: `<p>Use the link below within one hour to reset your FastConnect admin password.</p><p><a href="${resetUrl.toString()}">Reset admin password</a></p><p>If you did not request this, you can ignore this email.</p>`,
+        });
+      } catch (err) {
+        logger.error('Admin password reset email delivery failed', {
+          userId: admin.id,
+          error: err.message,
+        });
+        try {
+          const tokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+          await db.execute(
+            'DELETE FROM admin_password_reset_tokens WHERE token_hash = ?',
+            [tokenHash]
+          );
+        } catch (cleanupError) {
+          logger.error('Failed to remove undelivered admin password reset token', cleanupError);
+        }
+      }
+    }
+
+    res.json({
+      message: 'If an admin account matches that email, a reset link will be sent.',
+    });
+  }
+);
+
+app.post('/api/admin/auth/password-reset/confirm', passwordResetLimiter,
+  [
+    body('token').isString().matches(/^[a-f0-9]{64}$/i),
+    body('newPassword').isString().custom(value =>
+      typeof value === 'string' && value.length >= 12 && Buffer.byteLength(value, 'utf8') <= 72
+    ).withMessage('Password must be 12-72 bytes long'),
+  ],
+  handleValidationErrors,
+  async (req, res) => {
+    const tokenHash = crypto.createHash('sha256').update(req.body.token.toLowerCase()).digest('hex');
+    let connection;
+    let userId;
+
+    try {
+      connection = await db.getConnection();
+      await connection.beginTransaction();
+      const [tokens] = await connection.execute(
+        `SELECT user_id FROM admin_password_reset_tokens
+         WHERE token_hash = ? AND used_at IS NULL AND expires_at > NOW()
+         FOR UPDATE`,
+        [tokenHash]
+      );
+      if (!tokens.length) {
+        await connection.rollback();
+        return res.status(400).json({ error: 'Reset link is invalid or expired' });
+      }
+
+      userId = tokens[0].user_id;
+      const [users] = await connection.execute(
+        "SELECT id FROM users WHERE id = ? AND role = 'admin' AND deleted_at IS NULL FOR UPDATE",
+        [userId]
+      );
+      if (!users.length) {
+        await connection.rollback();
+        return res.status(400).json({ error: 'Reset link is invalid or expired' });
+      }
+
+      const passwordHash = await bcrypt.hash(req.body.newPassword, 12);
+      await connection.execute(
+        `UPDATE users
+         SET password_hash = ?, token_version = token_version + 1
+         WHERE id = ?`,
+        [passwordHash, userId]
+      );
+      await connection.execute(
+        'UPDATE admin_password_reset_tokens SET used_at = NOW() WHERE token_hash = ?',
+        [tokenHash]
+      );
+      await connection.execute(
+        'DELETE FROM admin_password_reset_tokens WHERE user_id = ? AND token_hash <> ?',
+        [userId, tokenHash]
+      );
+      await connection.commit();
+    } catch (err) {
+      if (connection) {
+        try {
+          await connection.rollback();
+        } catch (rollbackError) {
+          logger.error('Admin password reset confirmation rollback failed', rollbackError);
+        }
+      }
+      logger.error('Admin password reset confirmation failed', err);
+      return res.status(503).json({ error: 'Password reset is temporarily unavailable' });
+    } finally {
+      connection?.release();
+    }
+
+    await auditLog(userId, 'ADMIN_PASSWORD_RESET', 'user', userId, null, { passwordChanged: true }, req);
+    res.json({ message: 'Password reset successfully. Please sign in with your new password.' });
   }
 );
 

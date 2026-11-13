@@ -424,6 +424,56 @@ paths:
         '401':
           description: Invalid credentials or 2FA code
 
+  /api/admin/auth/password-reset/request:
+    post:
+      tags: [Admin Auth]
+      summary: Request an admin password reset link
+      description: |
+        Sends a one-hour, single-use password reset link to the matching admin
+        account email. The response is the same whether or not an account exists.
+        Requires SMTP_* and ADMIN_DASHBOARD_URL configuration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '200':
+          description: A reset email will be sent if an admin account matches.
+        '400':
+          description: Invalid email address.
+        '503':
+          description: Password recovery email is not configured or available.
+
+  /api/admin/auth/password-reset/confirm:
+    post:
+      tags: [Admin Auth]
+      summary: Set a new admin password using a reset link
+      description: |
+        Consumes the single-use token from the email link. The new password must
+        be 12-72 UTF-8 bytes. Existing admin sessions are invalidated.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, newPassword]
+              properties:
+                token: { type: string, pattern: '^[a-f0-9]{64}$' }
+                newPassword: { type: string, minLength: 12, maxLength: 72 }
+      responses:
+        '200':
+          description: Password changed successfully.
+        '400':
+          description: Invalid or expired token, or invalid password.
+        '503':
+          description: Password recovery service is temporarily unavailable.
+
   /api/admin/auth/logout:
     post:
       tags: [Admin Auth]

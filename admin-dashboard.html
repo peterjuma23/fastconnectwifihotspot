@@ -187,6 +187,11 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .login-btn{width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:12px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;}
 .login-btn:hover{background:var(--blue-d);}
 .login-error{color:var(--red);font-size:13px;margin-bottom:16px;text-align:center;}
+.login-link{display:block;margin:14px auto 0;background:none;border:none;color:var(--blue);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;}
+.login-link:hover{text-decoration:underline;}
+.login-message{font-size:13px;margin:0 0 16px;text-align:center;}
+.login-message.success{color:var(--green);}
+.login-message.error{color:var(--red);}
 </style>
 </head>
 <body>
@@ -196,9 +201,28 @@ tr:hover td{background:rgba(255,255,255,0.02);}
   <div class="login-box">
     <div class="login-title">FastConnect Admin</div>
     <div id="login-error" class="login-error" style="display:none;"></div>
-    <input type="text" id="login-username" class="login-input" placeholder="Username" autocomplete="off">
-    <input type="password" id="login-password" class="login-input" placeholder="Password">
-    <button class="login-btn" onclick="attemptLogin()">Login</button>
+    <div id="login-status" class="login-message success" style="display:none;"></div>
+    <form id="login-form" onsubmit="attemptLogin(event)">
+      <input type="text" id="login-username" class="login-input" placeholder="Username" autocomplete="username" required>
+      <input type="password" id="login-password" class="login-input" placeholder="Password" autocomplete="current-password" required>
+      <button class="login-btn" type="submit">Login</button>
+      <button class="login-link" type="button" onclick="showPasswordResetRequest()">Forgot password?</button>
+    </form>
+    <form id="password-reset-request-form" style="display:none;" onsubmit="requestAdminPasswordReset(event)">
+      <div class="login-title">Reset admin password</div>
+      <div id="password-reset-request-message" class="login-message" style="display:none;"></div>
+      <input type="email" id="password-reset-email" class="login-input" placeholder="Admin email address" autocomplete="email" required>
+      <button class="login-btn" type="submit">Send reset link</button>
+      <button class="login-link" type="button" onclick="showLoginForm()">Back to login</button>
+    </form>
+    <form id="password-reset-confirm-form" style="display:none;" onsubmit="confirmAdminPasswordReset(event)">
+      <div class="login-title">Choose a new password</div>
+      <div id="password-reset-confirm-message" class="login-message" style="display:none;"></div>
+      <input type="password" id="password-reset-new-password" class="login-input" placeholder="New password (12+ characters)" autocomplete="new-password" minlength="12" required>
+      <input type="password" id="password-reset-confirm-password" class="login-input" placeholder="Confirm new password" autocomplete="new-password" minlength="12" required>
+      <button class="login-btn" type="submit">Reset password</button>
+      <button class="login-link" type="button" onclick="showLoginForm()">Back to login</button>
+    </form>
   </div>
 </div>
 
@@ -481,19 +505,42 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 const API_BASE = 'https://fastconnect-backend-294o.onrender.com';
 let authToken = localStorage.getItem('admin_token');
 let currentPlans = [];
+let passwordResetToken = null;
 
 // ===== AUTH FUNCTIONS =====
-async function attemptLogin() {
+function showAuthForm(formId) {
+  ['login-form', 'password-reset-request-form', 'password-reset-confirm-form'].forEach(id => {
+    document.getElementById(id).style.display = id === formId ? '' : 'none';
+  });
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('login-status').style.display = 'none';
+  document.getElementById('password-reset-request-message').style.display = 'none';
+  document.getElementById('password-reset-confirm-message').style.display = 'none';
+}
+
+function showLoginForm() {
+  document.getElementById('password-reset-new-password').value = '';
+  document.getElementById('password-reset-confirm-password').value = '';
+  showAuthForm('login-form');
+}
+
+function showPasswordResetRequest() {
+  showAuthForm('password-reset-request-form');
+}
+
+function setResetMessage(id, message, type) {
+  const element = document.getElementById(id);
+  element.textContent = message;
+  element.className = `login-message ${type}`;
+  element.style.display = 'block';
+}
+
+async function attemptLogin(event) {
+  event.preventDefault();
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
   const errorEl = document.getElementById('login-error');
-  
-  if (!username || !password) {
-    errorEl.textContent = 'Please enter username and password';
-    errorEl.style.display = 'block';
-    return;
-  }
-  
+
   try {
     const response = await fetch(`${API_BASE}/api/admin/auth/login`, {
       method: 'POST',
@@ -523,6 +570,59 @@ async function attemptLogin() {
     console.error('Login error:', err);
     errorEl.textContent = 'Connection error. Please try again.';
     errorEl.style.display = 'block';
+  }
+}
+
+async function requestAdminPasswordReset(event) {
+  event.preventDefault();
+  const messageId = 'password-reset-request-message';
+  const email = document.getElementById('password-reset-email').value.trim();
+  try {
+    const response = await fetch(`${API_BASE}/api/admin/auth/password-reset/request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Unable to request a reset link.');
+    setResetMessage(messageId, data.message, 'success');
+  } catch (err) {
+    console.error('Password reset request error:', err);
+    setResetMessage(messageId, err.message || 'Connection error. Please try again.', 'error');
+  }
+}
+
+async function confirmAdminPasswordReset(event) {
+  event.preventDefault();
+  const messageId = 'password-reset-confirm-message';
+  const newPassword = document.getElementById('password-reset-new-password').value;
+  const confirmation = document.getElementById('password-reset-confirm-password').value;
+  if (!passwordResetToken) {
+    setResetMessage(messageId, 'This reset link is invalid or expired. Request a new link.', 'error');
+    return;
+  }
+  if (newPassword !== confirmation) {
+    setResetMessage(messageId, 'The passwords do not match.', 'error');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/api/admin/auth/password-reset/confirm`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: passwordResetToken, newPassword }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Unable to reset the password.');
+    passwordResetToken = null;
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    showLoginForm();
+    document.getElementById('login-status').textContent = data.message;
+    document.getElementById('login-status').style.display = 'block';
+    document.getElementById('login-username').focus();
+  } catch (err) {
+    console.error('Password reset confirmation error:', err);
+    setResetMessage(messageId, err.message || 'Connection error. Please try again.', 'error');
   }
 }
 
@@ -887,7 +987,17 @@ function toast(msg, type = 'info') {
 // ===== INIT =====
 renderChart();
 
-if (authToken) {
+const resetTokenFromUrl = new URLSearchParams(window.location.hash.slice(1)).get('resetToken');
+if (resetTokenFromUrl) {
+  passwordResetToken = resetTokenFromUrl;
+  window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+  authToken = null;
+  localStorage.removeItem('admin_token');
+  document.getElementById('login-overlay').style.display = 'flex';
+  showAuthForm('password-reset-confirm-form');
+}
+
+if (authToken && !resetTokenFromUrl) {
   document.getElementById('login-overlay').style.display = 'none';
   document.getElementById('sidebar').style.display = 'flex';
   document.getElementById('main').style.display = 'flex';

@@ -19,6 +19,7 @@ CREATE TABLE users (
   email         VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   role          ENUM('admin','staff') NOT NULL DEFAULT 'staff',
+  token_version INT UNSIGNED NOT NULL DEFAULT 0,
   mfa_secret    TEXT,
   mfa_enabled   TINYINT(1) NOT NULL DEFAULT 0,
   last_login_ip VARCHAR(45),
@@ -26,6 +27,16 @@ CREATE TABLE users (
   created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   deleted_at    DATETIME
+) ENGINE=InnoDB;
+
+CREATE TABLE admin_password_reset_tokens (
+  token_hash CHAR(64) PRIMARY KEY,
+  user_id    INT UNSIGNED NOT NULL,
+  expires_at DATETIME NOT NULL,
+  used_at    DATETIME,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_admin_password_reset_user (user_id),
+  INDEX idx_admin_password_reset_expiry (expires_at)
 ) ENGINE=InnoDB;
 
 -- ============================================================

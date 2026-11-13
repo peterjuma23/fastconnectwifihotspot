@@ -14,10 +14,9 @@
     "redis": "^4.6.7",
     "jsonwebtoken": "^9.0.2",
     "bcrypt": "^5.1.1",
-    "express-validator": "^7.0.1",
     "express-rate-limit": "^6.10.0",
+    "express-validator": "^7.0.1",
     "helmet": "^7.0.0",
-    "cors": "^2.8.5",
     "morgan": "^1.10.0",
     "axios": "^1.5.0",
     "node-ssh": "^13.1.0",
@@ -25,12 +24,14 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
     "winston": "^3.10.0",
-    "node-cron": "^3.0.2"
+    "node-cron": "^3.0.2",
+    "cors": "^2.8.5",
+    "nodemailer": "^10.5.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   }
 }
