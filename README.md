@@ -66,6 +66,16 @@ fastconnect/
 
 ## Quick Start (Production)
 
+### Render Admin Dashboard
+
+The admin dashboard is deployed as a separate Render Static Site from the repository root. Sync the Render Blueprint after pushing this configuration, or create a Static Site manually with the same Git repository, an empty Root Directory, this build command, and `admin-dashboard-build` as the Publish Directory:
+
+```sh
+mkdir -p admin-dashboard-build && cp admin-dashboard.html admin-dashboard-build/index.html && cp admin-dashboard.html admin-dashboard-build/admin-dashboard.html
+```
+
+After deployment, open the static site's `onrender.com` URL (or `/admin-dashboard.html`). Set the backend's `ADMIN_DASHBOARD_URL` environment variable to that HTTPS URL so password-reset emails link to the hosted page. The dashboard sends API requests to the configured backend URL in `admin-dashboard.html`.
+
 ### 1. Server Requirements
 
 - Ubuntu 22.04 LTS (or Debian 12)

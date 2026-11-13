@@ -24,3 +24,10 @@ services:
         generateValue: true
       - key: HOTSPOT_PROFILE
         value: fastconnect
+
+  - type: web
+    name: fastconnect-admin-dashboard
+    runtime: static
+    plan: free
+    buildCommand: mkdir -p admin-dashboard-build && cp admin-dashboard.html admin-dashboard-build/index.html && cp admin-dashboard.html admin-dashboard-build/admin-dashboard.html
+    staticPublishPath: admin-dashboard-build
